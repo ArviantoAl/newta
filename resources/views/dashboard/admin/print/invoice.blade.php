@@ -8429,7 +8429,7 @@
                             <td>{{ $no+1 }}</td>
                             <td>{{ $langganan->layanan->nama_layanan }}</td>
                             <td>{{ $langganan->langganan->alamat_pasang }}</td>
-                            <td>{{ $langganan->harga_satuan }}</td>
+                            <td>{{ rupiah($langganan->harga_satuan) }}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -8444,7 +8444,7 @@
                                 <strong>Total</strong>
                             </td>
                             <td>
-                                <div>{{ $data_print['harga_bayar'] }}</div>
+                                <div>{{ rupiah($data_print['harga_bayar']) }}</div>
                             </td>
                         </tr>
                         </tbody>

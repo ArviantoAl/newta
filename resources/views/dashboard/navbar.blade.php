@@ -101,16 +101,16 @@
                                     {{ __('Data') }}
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('keuangan.user') }}">
+                                    <a class="dropdown-item" href="{{ route('teknisi.user') }}">
                                         {{ __('Data User') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('keuangan.layanan') }}">
+                                    <a class="dropdown-item" href="{{ route('teknisi.layanan') }}">
                                         {{ __('Data Layanan') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('keuangan.langganan') }}">
+                                    <a class="dropdown-item" href="{{ route('teknisi.langganan') }}">
                                         {{ __('Data Langganan') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('keuangan.invoice') }}">
+                                    <a class="dropdown-item" href="{{ route('teknisi.invoice') }}">
                                         {{ __('Data Invoice') }}
                                     </a>
                                 </div>

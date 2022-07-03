@@ -37,20 +37,20 @@
                                         @if($invoice->status == 0)
                                             <td><div class="badge badge-info">Belum Dikirim</div></td>
                                             <td>
-                                                <a class="btn btn-success" href="{{ route('keuangan.kiriminvoice', $invoice->id_invoice) }}">Kirim Invoice</a>
+                                                <a class="btn btn-success" href="{{ route('teknisi.kiriminvoice', $invoice->id_invoice) }}">Kirim Invoice</a>
                                             </td>
                                         @elseif($invoice->status == 1)
                                             @if($tanggal>=$invoice->tgl_tempo)
                                                 <td><div class="badge badge-warning">Melebihi Batas Pembayaran</div></td>
                                                 <td>
-                                                    <a class="btn btn-danger" href="{{ route('keuangan.tolakpembayaran', $invoice->id_invoice) }}">Tolak</a>
+                                                    <a class="btn btn-danger" href="{{ route('teknisi.tolakpembayaran', $invoice->id_invoice) }}">Tolak</a>
                                                 </td>
                                             @elseif($tanggal<=$invoice->tgl_tempo)
                                                 <td><div class="badge badge-warning">Menunggu Pembayaran</div></td>
                                                 <td>
-                                                    <a class="btn btn-success" href="{{ route('keuangan.approvepembayaran', $invoice->id_invoice) }}">Invoice Terbayar</a>
+                                                    <a class="btn btn-success" href="{{ route('teknisi.approvepembayaran', $invoice->id_invoice) }}">Invoice Terbayar</a>
 
-                                                    <a class="btn btn-danger" href="{{ route('keuangan.tolakpembayaran', $invoice->id_invoice) }}">Tolak</a>
+                                                    <a class="btn btn-danger" href="{{ route('teknisi.tolakpembayaran', $invoice->id_invoice) }}">Tolak</a>
                                                 </td>
                                             @endif
                                         @elseif($invoice->status == 2)
@@ -59,7 +59,7 @@
                                             <td><div class="badge badge-danger">Tidak Dibayar</div></td>
                                         @endif
                                         <td>
-                                            <a class="btn btn-success" href="{{ route('keuangan.printinv', $invoice->id_invoice) }}">Cetak</a>
+                                            <a class="btn btn-success" href="{{ route('teknisi.printinv', $invoice->id_invoice) }}">Cetak</a>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -60,18 +60,17 @@ class InvoiceController extends Controller
             'langganans' => $langganans,
         ];
 
-//        dd($data_ambil);
-            Mail::to($email_pelanggan)->send(new Invoice($data_ambil));
-            $statusinv = Invoices::find($id_invoice);
-            $statusinv->status = '1';
-            $statusinv->tgl_terbit = $tgl_terbit;
-            $statusinv->tgl_tempo = $tgl_tempo;
-            $statusinv->save();
+        Mail::to($email_pelanggan)->send(new Invoice($data_ambil));
+        $statusinv = Invoices::find($id_invoice);
+        $statusinv->status = '1';
+        $statusinv->tgl_terbit = $tgl_terbit;
+        $statusinv->tgl_tempo = $tgl_tempo;
+        $statusinv->save();
 
         if (auth()->user()->user_role==1){
             return redirect()->route('admin.invoice');
         }elseif(auth()->user()->user_role==3){
-            return redirect()->route('keuangan.invoice');
+            return redirect()->route('teknisi.invoice');
         }
     }
 
@@ -90,7 +89,7 @@ class InvoiceController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.invoice', compact('invoices', 'tanggal', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.invoice', compact('invoices', 'tanggal', 'header'));
+            return view('dashboard.teknisi.invoice', compact('invoices', 'tanggal', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.invoice', compact('invoices', 'tanggal', 'header'));
         }
@@ -116,7 +115,7 @@ class InvoiceController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.invoice', compact('invoices', 'tanggal', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.invoice', compact('invoices', 'tanggal', 'header'));
+            return view('dashboard.teknisi.invoice', compact('invoices', 'tanggal', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.invoice', compact('invoices', 'tanggal', 'header'));
         }
@@ -144,7 +143,7 @@ class InvoiceController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.invoice', compact('invoices', 'tanggal', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.invoice', compact('invoices', 'tanggal', 'header'));
+            return view('dashboard.teknisi.invoice', compact('invoices', 'tanggal', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.invoice', compact('invoices', 'tanggal', 'header'));
         }
@@ -172,7 +171,7 @@ class InvoiceController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.invoice', compact('invoices', 'tanggal', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.invoice', compact('invoices', 'tanggal', 'header'));
+            return view('dashboard.teknisi.invoice', compact('invoices', 'tanggal', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.invoice', compact('invoices', 'tanggal', 'header'));
         }
@@ -197,7 +196,7 @@ class InvoiceController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.invoice', compact('invoices', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.invoice', compact('invoices', 'header'));
+            return view('dashboard.teknisi.invoice', compact('invoices', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.invoice', compact('invoices', 'header'));
         }
@@ -222,7 +221,7 @@ class InvoiceController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.invoice', compact('invoices', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.invoice', compact('invoices', 'header'));
+            return view('dashboard.teknisi.invoice', compact('invoices', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.invoice', compact('invoices', 'header'));
         }
@@ -261,7 +260,7 @@ class InvoiceController extends Controller
         if (auth()->user()->user_role==1){
             return redirect()->route('admin.invoice');
         }elseif(auth()->user()->user_role==3){
-            return redirect()->route('keuangan.invoice');
+            return redirect()->route('teknisi.invoice');
         }
 //        dd($id_langganan);
     }
@@ -294,7 +293,7 @@ class InvoiceController extends Controller
         if (auth()->user()->user_role==1){
             return redirect()->route('admin.invoice');
         }elseif(auth()->user()->user_role==3){
-            return redirect()->route('keuangan.invoice');
+            return redirect()->route('teknisi.invoice');
         }
 //        dd($id_langganan);
     }
@@ -330,7 +329,7 @@ class InvoiceController extends Controller
                 ->sum('harga_satuan');
             $harga_bayar = $getharga;
             $status = 'Lunas';
-        }elseif ($status_inv=='3'){
+        }elseif ($status_inv==null){
             $langganans = Langinv::where('invoice_id', $id_invoice)
                 ->where('pelanggan_id', $pelanggan_id)
                 ->get();
@@ -339,7 +338,7 @@ class InvoiceController extends Controller
                 ->where('pelanggan_id', $pelanggan_id)
                 ->sum('harga_satuan');
             $harga_bayar = $getharga;
-            $status = 'Batal';
+            $status = 'Belum Dikirim';
         }elseif ($status_inv=='0') {
             $langganans = Langinv::where('invoice_id', $id_invoice)
                 ->where('pelanggan_id', $pelanggan_id)
@@ -369,7 +368,7 @@ class InvoiceController extends Controller
         if (auth()->user()->user_role==1){
             return view('dashboard.admin.print.invoice', compact('data_print'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.print.invoice', compact('data_print'));
+            return view('dashboard.teknisi.print.invoice', compact('data_print'));
         }
     }
 }

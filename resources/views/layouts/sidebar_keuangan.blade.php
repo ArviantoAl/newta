@@ -9,12 +9,12 @@
         <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
             {{--dashboard--}}
-            @if($titlePage == 'Dashboard Keuangan')
+            @if($titlePage == 'Dashboard Teknisi')
                 <li class="active">
             @else
                 <li>
                     @endif
-                    <a class="nav-link" href="{{ route('keuangan.dashboard') }}"><i class="far fa-square"></i> <span>Dashboard</span></a></li>
+                    <a class="nav-link" href="{{ route('teknisi.dashboard') }}"><i class="far fa-square"></i> <span>Dashboard</span></a></li>
 
                 <li class="menu-header">User</li>
                 {{--user--}}
@@ -23,7 +23,7 @@
                 @else
                     <li>
                         @endif
-                        <a class="nav-link" href="{{route('keuangan.user')}}"><i class="fas fa-users"></i> <span>Daftar User</span></a></li>
+                        <a class="nav-link" href="{{route('teknisi.user')}}"><i class="fas fa-users"></i> <span>Daftar User</span></a></li>
 
                     <li class="menu-header">Layanan</li>
                     {{--layanan--}}
@@ -32,7 +32,7 @@
                     @else
                         <li>
                             @endif
-                            <a class="nav-link" href="{{route('keuangan.layanan')}}"><i class="fas fa-users"></i> <span>Daftar Layanan</span></a></li>
+                            <a class="nav-link" href="{{route('teknisi.layanan')}}"><i class="fas fa-users"></i> <span>Daftar Layanan</span></a></li>
 {{--                    endlayanan--}}
 
                         {{--langganan dan invoice--}}
@@ -51,49 +51,49 @@
                                     @else
                                         <li>
                                             @endif
-                                            <a href="{{ route('keuangan.langganan') }}">Semua Langganan</a></li>
+                                            <a href="{{ route('teknisi.langganan') }}">Semua Langganan</a></li>
                                         {{--langganan baru--}}
                                         @if($sub == 'Langganan Baru')
                                             <li class="active">
                                         @else
                                             <li>
                                                 @endif
-                                                <a href="{{ route('keuangan.langgananbaru') }}">Baru</a></li>
+                                                <a href="{{ route('teknisi.langgananbaru') }}">Baru</a></li>
                                             {{--langganan disetujui--}}
                                             @if($sub == 'Langganan Disetujui')
                                                 <li class="active">
                                             @else
                                                 <li>
                                                     @endif
-                                                    <a href="{{ route('keuangan.langganansetuju') }}">Disetujui</a></li>
+                                                    <a href="{{ route('teknisi.langganansetuju') }}">Disetujui</a></li>
                                                 {{--langganan menunggu--}}
                                                 @if($sub == 'Langganan Menunggu Pembayaran')
                                                     <li class="active">
                                                 @else
                                                     <li>
                                                         @endif
-                                                        <a href="{{ route('keuangan.langgananmenunggu') }}">Menunggu Pembayaran</a></li>
+                                                        <a href="{{ route('teknisi.langgananmenunggu') }}">Menunggu Pembayaran</a></li>
                                                     {{--langganan aktif--}}
                                                     @if($sub == 'Langganan Aktif')
                                                         <li class="active">
                                                     @else
                                                         <li>
                                                             @endif
-                                                            <a href="{{ route('keuangan.langgananaktif') }}">Aktif</a></li>
+                                                            <a href="{{ route('teknisi.langgananaktif') }}">Aktif</a></li>
                                                         {{--langganan kadaluarsa--}}
                                                         @if($sub == 'Langganan Kadaluarsa')
                                                             <li class="active">
                                                         @else
                                                             <li>
                                                                 @endif
-                                                                <a href="{{ route('keuangan.langganankadaluarsa') }}">Kadaluarsa</a></li>
+                                                                <a href="{{ route('teknisi.langganankadaluarsa') }}">Kadaluarsa</a></li>
                                                             {{--langganan batal--}}
                                                             @if($sub == 'Langganan Batal')
                                                                 <li class="active">
                                                             @else
                                                                 <li>
                                                                     @endif
-                                                                    <a href="{{ route('keuangan.langgananbatal') }}">Batal</a></li>
+                                                                    <a href="{{ route('teknisi.langgananbatal') }}">Batal</a></li>
                                 </ul>
                             </li>
                             {{--daftar invoice--}}
@@ -110,42 +110,42 @@
                                         @else
                                             <li>
                                                 @endif
-                                                <a href="{{ route('keuangan.invoice') }}">Semua Invoice</a></li>
+                                                <a href="{{ route('teknisi.invoice') }}">Semua Invoice</a></li>
                                             {{--invoice belum dikirim--}}
                                             @if($sub == 'Invoice Belum Dikirim')
                                                 <li class="active">
                                             @else
                                                 <li>
                                                     @endif
-                                                    <a href="{{ route('keuangan.inv_belumkirim') }}">Belum Dikirim</a></li>
+                                                    <a href="{{ route('teknisi.inv_belumkirim') }}">Belum Dikirim</a></li>
                                                 {{--invoice melebihi batas--}}
                                                 @if($sub == 'Invoice Melebihi Batas Pembayaran')
                                                     <li class="active">
                                                 @else
                                                     <li>
                                                         @endif
-                                                        <a href="{{ route('keuangan.inv_melebihibatas') }}">Melebihi Batas Bayar</a></li>
+                                                        <a href="{{ route('teknisi.inv_melebihibatas') }}">Melebihi Batas Bayar</a></li>
                                                     {{--invoice menunggu--}}
                                                     @if($sub == 'Invoice Menunggu Pembayaran')
                                                         <li class="active">
                                                     @else
                                                         <li>
                                                             @endif
-                                                            <a href="{{ route('keuangan.inv_menunggu') }}">Menunggu Pembayaran</a></li>
+                                                            <a href="{{ route('teknisi.inv_menunggu') }}">Menunggu Pembayaran</a></li>
                                                         {{--invoice lunas--}}
                                                         @if($sub == 'Invoice Lunas')
                                                             <li class="active">
                                                         @else
                                                             <li>
                                                                 @endif
-                                                                <a href="{{ route('keuangan.inv_lunas') }}">Lunas</a></li>
+                                                                <a href="{{ route('teknisi.inv_lunas') }}">Lunas</a></li>
                                                             {{--invoice batal--}}
                                                             @if($sub == 'Invoice Tidak Dibayar/Batal')
                                                                 <li class="active">
                                                             @else
                                                                 <li>
                                                                     @endif
-                                                                    <a href="{{ route('keuangan.inv_batal') }}">Tidak Dibayar/Batal</a></li>
+                                                                    <a href="{{ route('teknisi.inv_batal') }}">Tidak Dibayar/Batal</a></li>
                                     </ul>
                                 </li>
         </ul>

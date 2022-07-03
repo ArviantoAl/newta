@@ -8419,7 +8419,6 @@
                         <th>Langganan</th>
                         <th>Alamat Pemasangan</th>
                         <th>Harga Langganan</th>
-                        <th>Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -8429,11 +8428,6 @@
                         <td>{{ $langganan->layanan->nama_layanan }}</td>
                         <td>{{ $langganan->alamat_pasang }}</td>
                         <td>{{ $langganan->harga_satuan }}</td>
-                        @if($langganan->status == 3)
-                            <td>Menunggu pembayaran</td>
-                        @elseif($langganan->status == 4)
-                            <td>Langganan Lunas</td>
-                        @endif
                     </tr>
                     @endforeach
                     </tbody>
@@ -8453,9 +8447,7 @@
                         </tr>
                         </tbody>
                     </table>
-
                 </div>
-
             </div>
 
         </div>

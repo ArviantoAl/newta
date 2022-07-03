@@ -13,13 +13,18 @@ class Layanan extends Model
     protected $primaryKey = 'id_layanan';
     public $incrementing = true;
     protected $fillable = [
+        'layanan_kategori',
         'nama_layanan',
         'harga',
-        'layanan_kategori',
+        'status',
+        'bts_id',
     ];
 
     public function kategori(){
         return $this->belongsTo(Kategori::class, 'layanan_kategori');
+    }
+    public function bts(){
+        return $this->belongsTo(Bts::class, 'bts_id');
     }
     public function langganan(){
         return $this->hasMany(Langganan::class);

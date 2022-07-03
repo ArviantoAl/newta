@@ -4,7 +4,7 @@
 
 Project        :   NOWA - HTML5 Bootstrap Admin Template
 Version        :   V.3
-Copyright      :   Spruko Technologies Private Limited 
+Copyright      :   Spruko Technologies Private Limited
 Author         :   Spruko
 Author URL     :   https://themeforest.net/user/sprukosoft
 Support	       :   support@spruko.com
@@ -47662,7 +47662,7 @@ body:not(.lg-from-hash) .lg-outer.lg-start-zoom .lg-item.lg-complete .lg-object 
 
 /*
 * bootstrap-tagsinput v0.8.0
-* 
+*
 */
 .bootstrap-tagsinput {
     display: flex;
@@ -48042,7 +48042,7 @@ body:not(.lg-from-hash) .lg-outer.lg-start-zoom .lg-item.lg-complete .lg-object 
 }
 
 /*
-    Common 
+    Common
 */
 .wizard,
 .tabcontrol {
@@ -58071,16 +58071,16 @@ License: MIT
 }
 
 /*!
- * 
+ *
  * Super simple wysiwyg editor v0.8.18
  * https://summernote.org
- * 
- * 
+ *
+ *
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
- * 
+ *
  * Date: 2020-05-20T18:09Z
- * 
+ *
  */
 @font-face {
     font-family: "summernote";

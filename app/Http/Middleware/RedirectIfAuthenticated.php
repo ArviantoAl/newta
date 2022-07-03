@@ -28,10 +28,8 @@ class RedirectIfAuthenticated
             if (Auth::guard($guard)->check() && Auth::user()->user_role == 1) {
                 return redirect()->route('admin.dashboard');
             }elseif(Auth::guard($guard)->check() && Auth::user()->user_role == 2){
-                return redirect()->route('administrator.dashboard');
-            }elseif(Auth::guard($guard)->check() && Auth::user()->user_role == 3){
-                return redirect()->route('keuangan.dashboard');
-            }elseif(Auth::guard($guard)->check() && Auth::user()->user_role == 4){
+                return redirect()->route('teknisi.dashboard');
+            }elseif(Auth::guard($guard)->check() && Auth::user()->user_role == 3) {
                 return redirect()->route('pelanggan.dashboard');
             }
         }

@@ -19,8 +19,17 @@ return new class extends Migration
             $table->foreign('pelanggan_id')->references('id_user')->on('users');
             $table->integer('layanan_id')->unsigned();
             $table->foreign('layanan_id')->references('id_layanan')->on('layanans');
-            $table->longText('alamat_pasang')->nullable();
-            $table->enum('status',['4','3','2','1','0'])->nullable(); // 4(lunas), 3(menunggu pembayaran), 2(disetujui), 1(dibatalkan) 0(baru)
+            $table->char('provinsi_id');
+            $table->foreign('provinsi_id')->references('id')->on('provinces');
+            $table->char('kabupaten_id');
+            $table->foreign('kabupaten_id')->references('id')->on('regencies');
+            $table->char('kecamatan_id');
+            $table->foreign('kecamatan_id')->references('id')->on('districts');
+            $table->char('desa_id');
+            $table->foreign('desa_id')->references('id')->on('villages');
+            $table->longText('detail_alamat');
+            $table->longText('alamat_pasang')->nullable(); //untuk di implode jadi satu
+            $table->enum('status',['3','2','1','0'])->nullable(); // 3(on progress), 2(aktif), 1(pending) 0(nonaktif)
             $table->integer('harga_satuan');
             $table->timestamp('tgl_aktif')->nullable();
             $table->timestamp('tgl_lanjut')->nullable();

@@ -50,12 +50,12 @@ class User extends Authenticatable implements MustVerifyEmail
     public $incrementing = true;
     protected $fillable = [
         'name',
-        'alamat',
-        'no_hp',
         'email',
         'username',
         'password',
         'user_role',
+        'status',
+        'no_hp',
     ];
 
     public function role(){

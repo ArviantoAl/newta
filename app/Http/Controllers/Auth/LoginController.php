@@ -34,10 +34,8 @@ class LoginController extends Controller
         if (auth()->user()->user_role==1){
             return route('admin.dashboard');
         }elseif(auth()->user()->user_role==2){
-            return route('administrator.dashboard');
+            return route('teknisi.dashboard');
         }elseif(auth()->user()->user_role==3){
-            return route('keuangan.dashboard');
-        }elseif(auth()->user()->user_role==4){
             return route('pelanggan.dashboard');
         }
     }
@@ -66,10 +64,8 @@ class LoginController extends Controller
             if(auth()->user()->user_role == 1){
                 return redirect()->route('admin.dashboard');
             }elseif(auth()->user()->user_role == 2){
-                return redirect()->route('administrator.dashboard');
+                return redirect()->route('teknisi.dashboard');
             }elseif(auth()->user()->user_role == 3){
-                return redirect()->route('keuangan.dashboard');
-            }elseif(auth()->user()->user_role == 4){
                 return redirect()->route('pelanggan.dashboard');
             }
         }else{

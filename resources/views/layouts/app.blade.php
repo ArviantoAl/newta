@@ -86,10 +86,8 @@
     @if(Auth::user()->user_role == 1)
         @include('layouts.sidebar_admin')
     @elseif(Auth::user()->user_role == 2)
-        @include('layouts.sidebar_administrator')
-    @elseif(Auth::user()->user_role == 3)
         @include('layouts.sidebar_keuangan')
-    @elseif(Auth::user()->user_role == 4)
+    @elseif(Auth::user()->user_role == 3)
         @include('layouts.sidebar_pelanggan')
     @endif
         <!-- Main Content -->

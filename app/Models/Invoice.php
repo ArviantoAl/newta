@@ -15,11 +15,13 @@ class Invoice extends Model
     protected $keyType = 'string';
     protected $fillable = [
         'id_invoice',
+        'pelanggan_id',
         'tgl_terbit',
         'tgl_tempo',
         'harga_bayar',
         'status',
-        'pelanggan_id',
+        'bukti_bayar',
+        'bulan'
     ];
 
     public function pelanggan(){

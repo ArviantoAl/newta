@@ -1,20 +1,32 @@
-@extends('layouts.app',[
+@extends('layouts.nowa',[
     'titlePage' => __('Dashboard Admin'),
-    'sub' => ' '
 ])
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">{{ __('Dashboard') }}</div>
+    <!-- breadcrumb -->
+    <div class="breadcrumb-header justify-content-between">
+        <div class="left-content">
+            <span class="main-content-title mg-b-0 mg-b-lg-1">Dasboard</span>
+        </div>
+        <div class="justify-content-center mt-2">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">Dashboard Admin</li>
+            </ol>
+        </div>
+    </div>
+    <!-- /breadcrumb -->
 
-                    <div class="card-body">
-                        anda adalah admin
+    <!-- row -->
+    <div class="row">
+        <div class="col-md-12 col-xl-12 col-xs-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <h6>anda adalah admin</h6>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- row closed -->
 @endsection

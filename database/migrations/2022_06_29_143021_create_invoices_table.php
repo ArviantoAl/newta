@@ -13,16 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('langganan_invoices', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('invoice_id');
+        Schema::create('invoices', function (Blueprint $table) {
+            $table->string('id_invoice')->primary();
             $table->integer('pelanggan_id')->unsigned();
             $table->foreign('pelanggan_id')->references('id_user')->on('users');
-            $table->integer('layanan_id')->unsigned();
-            $table->foreign('layanan_id')->references('id_layanan')->on('layanans');
-            $table->integer('langganan_id')->unsigned();
-            $table->foreign('langganan_id')->references('id_langganan')->on('langganans');
-            $table->integer('harga_satuan');
+            $table->timestamp('tgl_terbit')->nullable();
+            $table->timestamp('tgl_tempo')->nullable();
+            $table->integer('harga_bayar');
+            $table->integer('bulan');
+            $table->enum('status',['2','1','0'])->nullable(); //2=lunas, 1=pending, 0=nonaktif, null=belum dikirim
+            $table->string('bukti_bayar')->nullable();
             $table->timestamps();
         });
     }
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('langganan_invoices');
+        Schema::dropIfExists('invoices');
     }
 };

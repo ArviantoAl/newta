@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('password');
             $table->integer('user_role')->unsigned();
             $table->foreign('user_role')->references('id_role')->on('roles');
-            $table->longText('alamat')->nullable();
+            $table->enum('status',['1','0'])->nullable(); //1=aktif, 0=onprogress
             $table->string('no_hp')->nullable();
             $table->rememberToken();
             $table->timestamps();

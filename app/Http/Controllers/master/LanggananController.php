@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\DB;
 class LanggananController extends Controller
 {
     public function semua_langganan(){
-        if(auth()->user()->user_role==4){
+        if(auth()->user()->user_role==3){
             $user = Auth::user()->id_user;
-            $langganans = Langganan::query()->where('pelanggan_id', $user)->get();
+            $langganans = Langganan::query()->where('pelanggan_id', $user)->paginate(10);
         }else{
-            $langganans = Langganan::all();
+            $langganans = Langganan::query()->paginate(10);
         }
         $today = Carbon::today()->setTimezone('Asia/Jakarta');
         $header = 'Semua Langganan';
@@ -26,10 +26,8 @@ class LanggananController extends Controller
         if (auth()->user()->user_role==1){
             return view('dashboard.admin.langganan', compact('langganans', 'today', 'header'));
         }elseif(auth()->user()->user_role==2){
-            return view('dashboard.administrator.langganan', compact('langganans', 'today', 'header'));
+            return view('dashboard.teknisi.langganan', compact('langganans', 'today', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.langganan', compact('langganans', 'today', 'header'));
-        }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.langganan', compact('langganans', 'today', 'header'));
         }
     }
@@ -55,7 +53,7 @@ class LanggananController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.langganan', compact('langganans', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.langganan', compact('langganans', 'header'));
+            return view('dashboard.teknisi.langganan', compact('langganans', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.langganan', compact('langganans', 'header'));
         }
@@ -82,7 +80,7 @@ class LanggananController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.langganan', compact('langganans', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.langganan', compact('langganans', 'header'));
+            return view('dashboard.teknisi.langganan', compact('langganans', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.langganan', compact('langganans', 'header'));
         }
@@ -109,7 +107,7 @@ class LanggananController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.langganan', compact('langganans', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.langganan', compact('langganans', 'header'));
+            return view('dashboard.teknisi.langganan', compact('langganans', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.langganan', compact('langganans', 'header'));
         }
@@ -136,7 +134,7 @@ class LanggananController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.langganan', compact('langganans', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.langganan', compact('langganans', 'header'));
+            return view('dashboard.teknisi.langganan', compact('langganans', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.langganan', compact('langganans', 'header'));
         }
@@ -166,7 +164,7 @@ class LanggananController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.langganan', compact('langganans', 'today', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.langganan', compact('langganans', 'today', 'header'));
+            return view('dashboard.teknisi.langganan', compact('langganans', 'today', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.langganan', compact('langganans', 'today', 'header'));
         }
@@ -196,7 +194,7 @@ class LanggananController extends Controller
         }elseif(auth()->user()->user_role==2){
             return view('dashboard.administrator.langganan', compact('langganans', 'today', 'header'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.langganan', compact('langganans', 'today', 'header'));
+            return view('dashboard.teknisi.langganan', compact('langganans', 'today', 'header'));
         }elseif(auth()->user()->user_role==4){
             return view('dashboard.pelanggan.langganan', compact('langganans', 'today', 'header'));
         }

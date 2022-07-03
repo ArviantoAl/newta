@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\master;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Mail\MailAdmins;
 use App\Models\Province;
 use App\Models\Role;
@@ -12,37 +11,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
-class AdminController extends Controller
+class UserController extends Controller
 {
-    public function index(){
-        return view('dashboard.admin.index');
-    }
-
-    public function index_administrator(){
-        return view('dashboard.administrator.index');
-    }
-
-    public function index_keuangan(){
-        return view('dashboard.keuangan.index');
-    }
-
     public function data_user(){
         $roles = Role::all();
-        $users = User::orderBy('name', 'ASC')
-            ->get();
+        $users = User::query()->paginate(10);
         return view('dashboard.admin.user.user', compact('roles', 'users'));
-    }
-
-    public function data_user_notadmin(){
-        $roles = Role::all();
-        $users = User::where('user_role', 4)->orderBy('name', 'ASC')
-            ->get();
-
-        if (auth()->user()->user_role==2){
-            return view('dashboard.administrator.user', compact('roles', 'users'));
-        }elseif(auth()->user()->user_role==3){
-            return view('dashboard.keuangan.user', compact('roles', 'users'));
-        }
     }
 
     public function tambah_user(){
@@ -72,57 +46,14 @@ class AdminController extends Controller
         $user->password = $password;
         $user->user_role = $request->user_role;
         $user->no_hp = $request->no_hp;
-
-//        $getprovinsi = DB::table('provinces')
-//            ->select('*')
-//            ->where('id', $request->id_provinsi)
-//            ->get()
-//            ->toArray();
-//        $objectToArray = (array)$getprovinsi;
-//        $prov1 = $objectToArray[0];
-//        $prov2 = (array)$prov1;
-//        $provinsi = $prov2['name'];
-//
-//        $getkabupaten = DB::table('regencies')
-//            ->select('*')
-//            ->where('id', $request->id_kabupaten)
-//            ->get()
-//            ->toArray();
-//        $objectToArray = (array)$getkabupaten;
-//        $kab1 = $objectToArray[0];
-//        $kab2 = (array)$kab1;
-//        $kabupaten = $kab2['name'];
-//
-//        $getkecamatan = DB::table('districts')
-//            ->select('*')
-//            ->where('id', $request->id_kecamatan)
-//            ->get()
-//            ->toArray();
-//        $objectToArray = (array)$getkecamatan;
-//        $kec1 = $objectToArray[0];
-//        $kec2 = (array)$kec1;
-//        $kecamatan = $kec2['name'];
-//
-//        $getdesa = DB::table('villages')
-//            ->select('*')
-//            ->where('id', $request->id_desa)
-//            ->get()
-//            ->toArray();
-//        $objectToArray = (array)$getdesa;
-//        $desa1 = $objectToArray[0];
-//        $desa2 = (array)$desa1;
-//        $desa = $desa2['name'];
-//
-//        $alamat = $request->id_alamat;
-//        $lengkap = array($alamat,$desa,$kecamatan,$kabupaten,$provinsi);
-//        $user->alamat = implode(", ",$lengkap);
+        $user->status = '1';
 
         if ($request->user_role == 1){
             $nama_role = 'Admin';
         }elseif ($request->user_role == 2){
-            $nama_role = 'Administrator';
+            $nama_role = 'Teknisi';
         }elseif ($request->user_role == 3){
-            $nama_role = 'Keuangan';
+            $nama_role = 'Pelanggan';
         }
 
         $user->save();

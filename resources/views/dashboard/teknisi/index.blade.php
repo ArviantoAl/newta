@@ -1,5 +1,5 @@
 @extends('layouts.app',[
-    'titlePage' => __('Dashboard Keuangan'),
+    'titlePage' => __('Dashboard Teknisi'),
     'sub' => ' '
 ])
 
@@ -11,7 +11,7 @@
                     <div class="card-header">{{ __('Dashboard') }}</div>
 
                     <div class="card-body">
-                        anda adalah keuangan
+                        anda adalah Teknisi
                     </div>
                 </div>
             </div>

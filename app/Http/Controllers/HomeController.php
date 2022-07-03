@@ -23,6 +23,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        if (auth()->user()->user_role==1){
+            return view('dashboard.admin.index');
+        }elseif(auth()->user()->user_role==2){
+            return view('teknisi.dashboard');
+        }elseif(auth()->user()->user_role==3){
+            return view('dashboard.pelanggan.index');
+        }
+//        return view('home');
     }
 }
