@@ -1,17 +1,17 @@
 @extends('layouts.nowa',[
-    'titlePage' => __('Daftar Semua User'),
+    'titlePage' => __('Daftar Pelanggan Aktif'),
 ])
 
 @section('content')
     <!-- breadcrumb -->
     <div class="breadcrumb-header justify-content-between">
         <div class="left-content">
-            <span class="main-content-title mg-b-0 mg-b-lg-1">Daftar User</span>
+            <span class="main-content-title mg-b-0 mg-b-lg-1">Daftar Pelanggan Aktif</span>
         </div>
         <div class="justify-content-center mt-2">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item tx-15"><a href="javascript:void(0);">Data User</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Daftar User</li>
+                <li class="breadcrumb-item active" aria-current="page">Daftar Pelanggan Aktif</li>
             </ol>
         </div>
     </div>
@@ -29,10 +29,10 @@
                                 <th>No</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>No Hp</th>
+                                <th>Username/No Hp</th>
                                 <th>Role</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th colspan="2">Action</th>
                             </tr>
                             </thead>
                             <tbody style="text-align: center">

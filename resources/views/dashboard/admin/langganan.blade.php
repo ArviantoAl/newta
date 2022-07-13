@@ -43,34 +43,43 @@
                                     <td>{{ $langganan->alamat_pasang }}</td>
                                     <td>{{ $langganan->layanan->nama_layanan }}</td>
                                     <td>{{ $langganan->tgl_lanjut }}</td>
-                                    @if($langganan->status == 0)
+                                    @if($langganan->status_id == 1)
                                         <td>
                                             <h5>
-                                                <span class="badge badge-pill bg-danger me-1">Langganan Tidak Aktif</span>
-                                            </h5>
-                                        </td>
-                                    @elseif($langganan->status == 1)
-                                        <td>
-                                            <h5>
-                                                <span class="badge badge-pill bg-warning me-1">Langganan Pending</span>
-                                            </h5>
-                                        </td>
-                                    @elseif($langganan->status == 2)
-                                        <td>
-                                            <h5>
-                                                <span class="badge badge-pill bg-success me-1">Langganan Aktif</span>
-                                            </h5>
-                                        </td>
-                                    @elseif($langganan->status == 3)
-                                        <td>
-                                            <h5>
-                                                <span class="badge badge-pill bg-info me-1">Langganan On Progress</span>
+                                                <span class="badge badge-pill bg-primary me-1">{{ $langganan->status->nama_status }}</span>
                                             </h5>
                                         </td>
                                         <td>
                                             <a class="btn btn-success" href="{{ route('admin.approvelangganan', $langganan->id_langganan) }}" data-toggle="tooltip" title="Approve">
                                                 <i class="fa fa-check"></i>
                                             </a>
+                                            <a class="btn btn-danger" href="{{ route('admin.rejectlangganan', $langganan->id_langganan) }}" data-toggle="tooltip" title="Batal">
+                                                <i class="fa fa-ban"></i>
+                                            </a>
+                                        </td>
+                                    @elseif($langganan->status_id == 2)
+                                        <td>
+                                            <h5>
+                                                <span class="badge badge-pill bg-warning me-1">{{ $langganan->status->nama_status }}</span>
+                                            </h5>
+                                        </td>
+                                    @elseif($langganan->status_id == 3)
+                                        <td>
+                                            <h5>
+                                                <span class="badge badge-pill bg-success me-1">{{ $langganan->status->nama_status }}</span>
+                                            </h5>
+                                        </td>
+                                    @elseif($langganan->status_id == 4)
+                                        <td>
+                                            <h5>
+                                                <span class="badge badge-pill bg-danger me-1">{{ $langganan->status->nama_status }}</span>
+                                            </h5>
+                                        </td>
+                                    @elseif($langganan->status_id == 5)
+                                        <td>
+                                            <h5>
+                                                <span class="badge badge-pill bg-danger me-1">{{ $langganan->status->nama_status }}</span>
+                                            </h5>
                                         </td>
                                     @endif
                                 </tr>

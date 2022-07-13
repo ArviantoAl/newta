@@ -20,14 +20,9 @@
     <!-- Row -->
     <div class="row row-sm">
         <div class="col-lg-12">
-            @if(count($datas)>0)
-            <a class="btn btn-success" href="{{ route('admin.kirimbelum') }}">
-                Kirim Invoice Belum Dikirim
-            </a>
             <a class="btn btn-success" href="{{ route('admin.kirimsemua') }}">
                 Kirim Invoice Bulan Ini
             </a>
-            @endif
             <div class="card custom-card overflow-hidden">
                 <div class="card-body">
                     @if (session()->has('success'))
@@ -44,9 +39,10 @@
                                 <th>Nama Pelanggan</th>
                                 <th>Tanggal Terbit</th>
                                 <th>Tanggal Tempo</th>
-                                <th>Harga Bayar</th>
-                                <th>Status</th>
-                                <th colspan="2">Action</th>
+                                <th>Total Tagihan</th>
+                                <th>PPN</th>
+                                <th>Status Terakhir</th>
+                                <th colspan="3">Action</th>
                             </tr>
                             </thead>
                             <tbody style="text-align: center">
@@ -56,38 +52,45 @@
                                     <td>{{ $invoice->pelanggan->name }}</td>
                                     <td>{{ $invoice->tgl_terbit }}</td>
                                     <td>{{ $invoice->tgl_tempo }}</td>
-                                    <td>{{ rupiah($invoice->harga_bayar) }}</td>
-                                    @if($invoice->status == null)
+                                    <td>{{ rupiah($invoice->tagihan) }}</td>
+                                    <td>
+                                        <input id="ppn" type="checkbox" data-id="{{ $invoice->id_invoice }}" {{ $invoice->ppn == 1 ? 'checked' : '' }}>
+                                    </td>
+                                    @if($invoice->status_id == 6)
                                         <td>
-                                            <h5><span class="badge badge-pill bg-info me-1">Belum Dikirim</span></h5>
+                                            <h5><span class="badge badge-pill bg-warning me-1">{{ $invoice->status->nama_status }}</span></h5>
                                         </td>
-                                    @elseif($invoice->status == '0')
+                                    @elseif($invoice->status_id == 7)
                                         <td>
-                                            <h5><span class="badge badge-pill bg-info me-1">Tidak Aktif</span></h5>
+                                            <h5><span class="badge badge-pill bg-warning me-1">{{ $invoice->status->nama_status }}</span></h5>
                                         </td>
-                                    @elseif($invoice->status == '1')
-                                        @if($invoice->bukti_bayar == null)
-                                            <td>
-                                                <h5><span class="badge badge-pill bg-info me-1">Menunggu Pembayaran</span></h5>
-                                            </td>
-                                        @else
-                                            <td>
-                                                <h5><span class="badge badge-pill bg-info me-1">Sudah Dibayar</span></h5>
-                                            </td>
-                                            <td>
-                                                <a class="btn btn-success" href="{{ route('admin.approvepembayaran', $invoice->id_invoice) }}" data-toggle="tooltip" title="Setujui">
-                                                    <i class="fa fa-check"></i>
-                                                </a>
-                                                <a class="btn btn-danger" href="{{ route('admin.tolakpembayaran', $invoice->id_invoice) }}" data-toggle="tooltip" title="Tolak">
-                                                    <i class="fa fa-ban"></i>
-                                                </a>
-                                            </td>
-                                        @endif
-                                    @elseif($invoice->status == '2')
                                         <td>
-                                            <h5><span class="badge badge-pill bg-info me-1">Lunas</span></h5>
+                                            <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModal{{$invoice->id_invoice}}" data-toggle="tooltip" title="Lihat Bukti Bayar">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-success" href="{{ route('admin.approvepembayaran', $invoice->id_invoice) }}" data-toggle="tooltip" title="Setujui">
+                                                <i class="fa fa-check"></i>
+                                            </a>
+                                            <a class="btn btn-danger" href="{{ route('admin.tolakpembayaran', $invoice->id_invoice) }}" data-toggle="tooltip" title="Tolak">
+                                                <i class="fa fa-ban"></i>
+                                            </a>
+                                        </td>
+                                    @elseif($invoice->status_id == 8)
+                                        <td>
+                                            <h5><span class="badge badge-pill bg-success me-1">{{ $invoice->status->nama_status }}</span></h5>
+                                        </td>
+                                    @elseif($invoice->status_id == 9)
+                                        <td>
+                                            <h5><span class="badge badge-pill bg-danger me-1">{{ $invoice->status->nama_status }}</span></h5>
                                         </td>
                                     @endif
+{{--                                    <td>--}}
+{{--                                        <a class="btn btn-warning" role="button" id="detail" data-id="{{ $invoice->id_invoice }}" data-toggle="tooltip" title="detail">--}}
+{{--                                            <i class="fa fa-plus"></i>--}}
+{{--                                        </a>--}}
+{{--                                    </td>--}}
                                     <td>
                                         <a class="btn btn-success" href="{{ route('admin.printinv', $invoice->id_invoice) }}" data-toggle="tooltip" title="Cetak">
                                             <i class="fa fa-print"></i>
@@ -103,5 +106,89 @@
             </div>
         </div>
     </div>
+@endsection
+@section('modal2')
+    <div class="modal" id="detailmodal">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
 
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Detail Invoice</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(function() {
+            $.ajaxSetup({
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+            });
+
+            $(function () {
+                $('#detail').click(function(){
+                    let id_invoice = $(this).data('id');
+                    console.log(id_invoice);
+                    $.ajax({
+                        type: "POST",
+                        url: "{{route('getDetail')}}",
+                        data: {id_invoice: id_invoice},
+                        cache: false,
+                        success: function (msg) {
+                            $('.modal-body').html(msg);
+                            // Display Modal
+                            $('#detailmodal').modal('show');
+                        },
+                        error: function (data) {
+                            console.log('error:', data);
+                        }
+                    })
+                })
+            })
+        });
+    </script>
+@endsection
+@section('modal')
+    @foreach($invoices as $no => $invoice)
+        <div class="modal" id="myModal{{$invoice->id_invoice}}">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Bukti pembayaran {{$invoice->id_invoice}}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <img src="{{ asset('bukti_bayar') }}/{{ $invoice->bukti_bayar }}" width="100%">
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    @endforeach
 @endsection

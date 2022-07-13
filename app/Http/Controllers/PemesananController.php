@@ -3,19 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Mail\MailAdmins;
+use App\Mail\Invoice as Invoices;
+use App\Models\Bts;
 use App\Models\District;
 use App\Models\Invoice;
-use App\Models\Kategori;
 use App\Models\Langganan;
 use App\Models\Langinv;
 use App\Models\Layanan;
+use App\Models\ProfilCv;
 use App\Models\Province;
 use App\Models\Regency;
+use App\Models\TurunanBts;
 use App\Models\User;
 use App\Models\Village;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -23,13 +25,18 @@ use Illuminate\Support\Facades\Mail;
 class PemesananController extends Controller
 {
     public function pemesanan(){
-        $user = User::query()->where('user_role', '=', 3)->
-        where('status', '=', '1')->get();
-        $kategori = Kategori::all();
+        $user = User::query()->where('user_role', '=', 3)
+            ->where('status_id', '=', 3)
+            ->orWhere('status_id', '=', 2)
+            ->get();
+        $layanan = Layanan::all();
         $provinsi = Province::all();
+        $bts = Bts::query()->where('status_id', '=', 3)->get();
+//        $turunan = Bts::query()->where('turunan', '!=', null )
+//            ->where('level', '=', null)->get();
 
 //        dd($kategori);
-        return view('dashboard.admin.pemesanan.pemesanan', compact('user', 'kategori', 'provinsi'));
+        return view('dashboard.admin.pemesanan.pemesanan', compact('user', 'layanan', 'provinsi', 'bts'));
     }
 
     public function pelanggan_baru(Request $request){
@@ -37,20 +44,17 @@ class PemesananController extends Controller
             'name' => 'required',
             'username' => 'required',
             'email' => 'required',
-            'no_hp' => 'required',
         ]);
         $pass = rand(100000, 999999);
         $password = Hash::make($pass);
         $name = $request->name;
         $username = $request->username;
         $email = $request->email;
-        $no_hp = $request->no_hp;
 
         $getpelanggan_id = User::query()
             ->where('name','=',$name)
             ->where('email','=',$email)
             ->where('username','=',$username)
-            ->where('no_hp','=',$no_hp)
             ->get();
 
         $getemail = User::query()
@@ -65,7 +69,7 @@ class PemesananController extends Controller
         }elseif(count($getemail)>0){
             return response()->json(['cek'=>1, 'msg'=>'Email sudah terpakai!']);
         }elseif(count($getusername)>0){
-            return response()->json(['cek'=>2, 'msg'=>'Username sudah terpakai!']);
+            return response()->json(['cek'=>2, 'msg'=>'No Hp sudah terpakai!']);
         }else{
             $user = new User();
             $user->name = $name;
@@ -73,8 +77,7 @@ class PemesananController extends Controller
             $user->username = $username;
             $user->password = $password;
             $user->user_role = 3;
-            $user->no_hp = $no_hp;
-            $user->status = '1';
+            $user->status_id = 2;
             $nama_role = 'Pelanggan';
             $user->save();
 
@@ -94,21 +97,24 @@ class PemesananController extends Controller
             $kecamatan_id = $request->id_kecamatan;
             $desa_id = $request->id_desa;
             $detail_alamat = $request->id_alamat;
+            $bts_id = $request->id_bts;
+            $getturunan = $request->id_turunan;
+            if ($getturunan==0){
+                $turunan_id = null;
+            }else{
+                $turunan_id = $getturunan;
+            }
+            $ip = $request->ip;
+            $ip_radio = $request->ip_radio;
 
-            $getlayanan = Layanan::query()
-                ->where('id_layanan', '=', $layanan_id)
-                ->get()
-                ->toArray();
-            $objectToArray = (array)$getlayanan;
-            $lay1 = $objectToArray[0];
-            $lay2 = (array)$lay1;
-            $harga = $lay2['harga'];
+            $getlayanan = Layanan::query()->find($layanan_id);
+            $harga = $getlayanan->harga;
 
             $getpelanggan_id2 = User::query()
                 ->where('name','=',$name)
                 ->where('email','=',$email)
                 ->where('username','=',$username)
-                ->where('no_hp','=',$no_hp)
+                ->where('status_id', '=', 2)
                 ->get()
                 ->toArray();
             $objectToArray = (array)$getpelanggan_id2;
@@ -124,54 +130,35 @@ class PemesananController extends Controller
             $langganan->kecamatan_id = $kecamatan_id;
             $langganan->desa_id = $desa_id;
             $langganan->detail_alamat = $detail_alamat;
+            $langganan->bts_id = $bts_id;
+            $langganan->turunan_id = $turunan_id;
+            $langganan->ip = $ip;
+            $langganan->ip_radio = $ip_radio;
 
-            $getprovinsi = Province::query()
-                ->where('id', $request->id_provinsi)
-                ->get()
-                ->toArray();
-            $objectToArray = (array)$getprovinsi;
-            $prov1 = $objectToArray[0];
-            $prov2 = (array)$prov1;
-            $provinsi = $prov2['name'];
+            $getprovinsi = Province::query()->find($provinsi_id);
+            $provinsi = $getprovinsi->name;
 
-            $getkabupaten = Regency::query()
-                ->where('id', $request->id_kabupaten)
-                ->get()
-                ->toArray();
-            $objectToArray = (array)$getkabupaten;
-            $kab1 = $objectToArray[0];
-            $kab2 = (array)$kab1;
-            $kabupaten = $kab2['name'];
+            $getkabupaten = Regency::query()->find($kabupaten_id);
+            $kabupaten = $getkabupaten->name;
 
-            $getkecamatan = District::query()
-                ->where('id', $request->id_kecamatan)
-                ->get()
-                ->toArray();
-            $objectToArray = (array)$getkecamatan;
-            $kec1 = $objectToArray[0];
-            $kec2 = (array)$kec1;
-            $kecamatan = $kec2['name'];
+            $getkecamatan = District::query()->find($kecamatan_id);
+            $kecamatan = $getkecamatan->name;
 
-            $getdesa = Village::query()
-                ->where('id', $request->id_desa)
-                ->get()
-                ->toArray();
-            $objectToArray = (array)$getdesa;
-            $desa1 = $objectToArray[0];
-            $desa2 = (array)$desa1;
-            $desa = $desa2['name'];
+            $getdesa = Village::query()->find($desa_id);
+            $desa = $getdesa->name;
 
             $alamat = $detail_alamat;
             $lengkap = array($alamat,$desa,$kecamatan,$kabupaten,$provinsi);
             $langganan->alamat_pasang = implode(", ",$lengkap);
-            $langganan->status = '1';
-            $langganan->harga_satuan = $harga;
+            $langganan->status_id = 2;
             $langganan->save();
 
             $getlangganan_id = Langganan::query()
                 ->where('pelanggan_id', '=', $pelanggan_id)
                 ->where('layanan_id', '=', $layanan_id)
-                ->where('status', '=', '1')
+                ->where('ip', '=', $ip)
+                ->where('ip_radio', '=', $ip_radio)
+                ->where('status_id', '=', 2)
                 ->get()
                 ->toArray();
             $objectToArray = (array)$getlangganan_id;
@@ -186,12 +173,22 @@ class PemesananController extends Controller
             $lengkap = array($huruf,$acak1,$pelanggan_id,$acak2,$bulan);
             $id_invoice = implode($lengkap);
 
+            $tgl_terbit = Carbon::now()->setTimezone('Asia/Jakarta');
+
+            $getppn = ProfilCv::query()->find(1);
+            $ppn = $getppn->ppn;
+            $hargappn = $harga*$ppn/100;
+            $harga2 = $harga+$hargappn;
+
             $invoice = new Invoice();
             $invoice->id_invoice = $id_invoice;
             $invoice->pelanggan_id = $pelanggan_id;
-            $invoice->harga_bayar = $harga;
+            $invoice->harga_bayar = $harga2;
+            $invoice->tagihan = $harga2;
+            $invoice->tgl_terbit = $tgl_terbit;
             $invoice->bulan = $bulan;
-            $invoice->status = null;
+            $invoice->ppn = 1;
+            $invoice->status_id = 6;
             $invoice->save();
 
             $langinv = new Langinv();
@@ -200,10 +197,30 @@ class PemesananController extends Controller
             $langinv->layanan_id = $layanan_id;
             $langinv->harga_satuan = $harga;
             $langinv->langganan_id = $langganan_id;
+            $langinv->status_id = 6;
             $langinv->save();
 
-            return redirect()->back()
-                ->with('success','Langganan berhasil ditambahkan.');
+            $langganans = Langinv::query()
+                ->where('pelanggan_id', '=', $pelanggan_id)
+                ->where('invoice_id', '=', $id_invoice)
+                ->where('status_id', '=', 6)
+                ->get();
+
+            $data_ambil = [
+                'email_cv' => 'info@gudangtechno.web.id',
+                'nama_pelanggan' => $name,
+                'email_pelanggan' => $email,
+                'no_hp_pelanggan' => $username,
+                'id_invoice' => $id_invoice,
+                'tgl_terbit' => $tgl_terbit,
+                'harga_bayar' => $harga2,
+                'langganans' => $langganans,
+            ];
+
+            Mail::to($email)->send(new Invoices($data_ambil));
+
+            return redirect()->route('admin.invoice')
+                ->with('success','Invoice Terkirim.');
         }
     }
 
@@ -215,15 +232,18 @@ class PemesananController extends Controller
         $kecamatan_id = $request->id_kecamatan;
         $desa_id = $request->id_desa;
         $detail_alamat = $request->id_alamat;
+        $bts_id = $request->id_bts;
+        $getturunan = $request->id_turunan;
+        if ($getturunan==0){
+            $turunan_id = null;
+        }else{
+            $turunan_id = $getturunan;
+        }
+        $ip = $request->ip;
+        $ip_radio = $request->ip_radio;
 
-        $getlayanan = Layanan::query()
-            ->where('id_layanan', '=', $layanan_id)
-            ->get()
-            ->toArray();
-        $objectToArray = (array)$getlayanan;
-        $lay1 = $objectToArray[0];
-        $lay2 = (array)$lay1;
-        $harga = $lay2['harga'];
+        $getlayanan = Layanan::query()->find($layanan_id);
+        $harga = $getlayanan->harga;
 
         $langganan = new Langganan();
         $langganan->pelanggan_id = $pelanggan_id;
@@ -233,54 +253,35 @@ class PemesananController extends Controller
         $langganan->kecamatan_id = $kecamatan_id;
         $langganan->desa_id = $desa_id;
         $langganan->detail_alamat = $detail_alamat;
+        $langganan->bts_id = $bts_id;
+        $langganan->turunan_id = $turunan_id;
+        $langganan->ip = $ip;
+        $langganan->ip_radio = $ip_radio;
 
-        $getprovinsi = Province::query()
-            ->where('id', '=', $provinsi_id)
-            ->get()
-            ->toArray();
-        $objectToArray = (array)$getprovinsi;
-        $prov1 = $objectToArray[0];
-        $prov2 = (array)$prov1;
-        $provinsi = $prov2['name'];
+        $getprovinsi = Province::query()->find($provinsi_id);
+        $provinsi = $getprovinsi->name;
 
-        $getkabupaten = Regency::query()
-            ->where('id', '=', $kabupaten_id)
-            ->get()
-            ->toArray();
-        $objectToArray = (array)$getkabupaten;
-        $kab1 = $objectToArray[0];
-        $kab2 = (array)$kab1;
-        $kabupaten = $kab2['name'];
+        $getkabupaten = Regency::query()->find($kabupaten_id);
+        $kabupaten = $getkabupaten->name;
 
-        $getkecamatan = District::query()
-            ->where('id', '=', $kecamatan_id)
-            ->get()
-            ->toArray();
-        $objectToArray = (array)$getkecamatan;
-        $kec1 = $objectToArray[0];
-        $kec2 = (array)$kec1;
-        $kecamatan = $kec2['name'];
+        $getkecamatan = District::query()->find($kecamatan_id);
+        $kecamatan = $getkecamatan->name;
 
-        $getdesa = Village::query()
-            ->where('id', '=', $desa_id)
-            ->get()
-            ->toArray();
-        $objectToArray = (array)$getdesa;
-        $desa1 = $objectToArray[0];
-        $desa2 = (array)$desa1;
-        $desa = $desa2['name'];
+        $getdesa = Village::query()->find($desa_id);
+        $desa = $getdesa->name;
 
         $alamat = $detail_alamat;
         $lengkap = array($alamat,$desa,$kecamatan,$kabupaten,$provinsi);
         $langganan->alamat_pasang = implode(", ",$lengkap);
-        $langganan->status = '1';
-        $langganan->harga_satuan = $harga;
+        $langganan->status_id = 2;
         $langganan->save();
 
         $getlangganan_id = Langganan::query()
             ->where('pelanggan_id', '=', $pelanggan_id)
             ->where('layanan_id', '=', $layanan_id)
-            ->where('status', '=', '1')
+            ->where('ip', '=', $ip)
+            ->where('ip_radio', '=', $ip_radio)
+            ->where('status_id', '=', 2)
             ->get()
             ->toArray();
         $objectToArray = (array)$getlangganan_id;
@@ -288,54 +289,79 @@ class PemesananController extends Controller
         $lang2 = (array)$lang1;
         $langganan_id = $lang2['id_langganan'];
 
-        $getharga = DB::table('langganans')
-            ->where('pelanggan_id', '=', $pelanggan_id)
-            ->where('status', '1')
-            ->sum('harga_satuan');
-
         $getinvoice = Invoice::query()
             ->where('pelanggan_id', '=', $pelanggan_id)
-            ->where('status', '=', null)
             ->get()
             ->toArray();
+        $objectToArray = (array)$getinvoice;
+        $inv1 = $objectToArray[0];
+        $inv2 = (array)$inv1;
+        $id_inv = $inv2['id_invoice'];
 
-        if (count($getinvoice)>0){
-            $objectToArray = (array)$getinvoice;
-            $inv1 = $objectToArray[0];
-            $inv2 = (array)$inv1;
-            $id_inv = $inv2['id_invoice'];
-            DB::table('invoices')
-                ->where('id_invoice', $id_inv)
-                ->update([
-                    'harga_bayar' => $getharga,
-                ]);
-
-            $langinv = new Langinv();
-            $langinv->invoice_id = $id_inv;
-        }else{
-            $huruf = 'INV';
-            $acak1 = rand(10, 99);
-            $acak2 = rand(10, 99);
-            $bulan=Carbon::now()->format('n');
-            $lengkap = array($huruf,$acak1,$pelanggan_id,$acak2,$bulan);
-            $id_invoice = implode($lengkap);
-
-            $invoice = new Invoice();
-            $invoice->id_invoice = $id_invoice;
-            $invoice->pelanggan_id = $pelanggan_id;
-            $invoice->harga_bayar = $getharga;
-            $invoice->bulan = $bulan;
-            $invoice->status = null;
-            $invoice->save();
-
-            $langinv = new Langinv();
-            $langinv->invoice_id = $id_invoice;
-        }
+        $langinv = new Langinv();
+        $langinv->invoice_id = $id_inv;
         $langinv->pelanggan_id = $pelanggan_id;
         $langinv->layanan_id = $layanan_id;
         $langinv->harga_satuan = $harga;
         $langinv->langganan_id = $langganan_id;
+        $langinv->status_id = 6;
         $langinv->save();
+
+        $tgl_terbit = Carbon::now()->setTimezone('Asia/Jakarta');
+
+        $gettotal = DB::table('langganan_invoices')
+            ->where('pelanggan_id', '=', $pelanggan_id)
+            ->where('invoice_id', '=', $id_inv)
+            ->where('status_id', '=', 6)
+            ->orWhere('status_id', '=', 7)
+            ->orWhere('status_id', '=', 8)
+            ->sum('harga_satuan');
+
+        $gettagihan = DB::table('langganan_invoices')
+            ->where('pelanggan_id', '=', $pelanggan_id)
+            ->where('invoice_id', '=', $id_inv)
+            ->where('status_id', '=', 6)
+            ->sum('harga_satuan');
+
+        $getppn = ProfilCv::query()->find(1);
+        $ppn = $getppn->ppn;
+        $hargappn = $gettotal*$ppn/100;
+        $hargappn2 = $gettagihan*$ppn/100;
+        $hgettotal = $gettotal+$hargappn;
+        $hgettagihan = $gettagihan+$hargappn2;
+
+        DB::table('invoices')
+            ->where('id_invoice', $id_inv)
+            ->update([
+                'harga_bayar' => $hgettotal,
+                'tagihan' => $hgettagihan,
+                'tgl_terbit' => $tgl_terbit,
+                'tgl_tempo' => null,
+                'status_id' => 6
+            ]);
+
+        $user = User::query()->find($pelanggan_id);
+        $name = $user->name;
+        $email = $user->email;
+        $username = $user->username;
+
+        $langganans = Langinv::query()
+            ->where('pelanggan_id', '=', $pelanggan_id)
+            ->where('invoice_id', '=', $id_inv)
+            ->get();
+
+        $data_ambil = [
+            'email_cv' => 'info@gudangtechno.web.id',
+            'nama_pelanggan' => $name,
+            'email_pelanggan' => $email,
+            'no_hp_pelanggan' => $username,
+            'id_invoice' => $id_inv,
+            'tgl_terbit' => $tgl_terbit,
+            'harga_bayar' => $hgettagihan,
+            'langganans' => $langganans,
+        ];
+
+        Mail::to($email)->send(new Invoices($data_ambil));
 
         return redirect()->back()
             ->with('success','Langganan berhasil ditambahkan.');
@@ -345,20 +371,19 @@ class PemesananController extends Controller
         $request->validate([
             'name' => 'required',
             'username' => 'required',
-            'email' => 'required',
-            'no_hp' => 'required',
         ]);
         $password = rand(100000, 999999);
         $name = $request->name;
         $username = $request->username;
-        $email = $request->email;
-        $no_hp = $request->no_hp;
+        $rn = rand(100000, 999999);
+
+        $rml = "@onprogress.com";
+        $eml = array($name,$rn,$rml);
+        $email = implode($eml);
 
         $getpelanggan_id = User::query()
             ->where('name','=',$name)
-            ->where('email','=',$email)
             ->where('username','=',$username)
-            ->where('no_hp','=',$no_hp)
             ->get();
         $getemail = User::query()
             ->where('email','=',$email)
@@ -372,7 +397,7 @@ class PemesananController extends Controller
         }elseif(count($getemail)>0){
             return response()->json(['cek'=>1, 'msg'=>'Email sudah terpakai!']);
         }elseif(count($getusername)>0){
-            return response()->json(['cek'=>2, 'msg'=>'Username sudah terpakai!']);
+            return response()->json(['cek'=>2, 'msg'=>'No Hp sudah terpakai!']);
         }else{
             $user = new User();
             $user->name = $name;
@@ -380,15 +405,13 @@ class PemesananController extends Controller
             $user->username = $username;
             $user->password = $password;
             $user->user_role = 3;
-            $user->no_hp = $no_hp;
-            $user->status = '0';
+            $user->status_id = 1;
             $user->save();
 
             $getpelanggan = User::query()
                 ->where('name','=',$name)
                 ->where('email','=',$email)
                 ->where('username','=',$username)
-                ->where('no_hp','=',$no_hp)
                 ->get()
                 ->toArray();
             $objectToArray = (array)$getpelanggan;
@@ -405,15 +428,6 @@ class PemesananController extends Controller
         $desa_id = $request->id_desa;
         $detail_alamat = $request->id_alamat;
 
-        $getlayanan = Layanan::query()
-            ->where('id_layanan', '=', $layanan_id)
-            ->get()
-            ->toArray();
-        $objectToArray = (array)$getlayanan;
-        $lay1 = $objectToArray[0];
-        $lay2 = (array)$lay1;
-        $harga = $lay2['harga'];
-
         $langganan = new Langganan();
         $langganan->pelanggan_id = $pelanggan_id;
         $langganan->layanan_id = $layanan_id;
@@ -423,47 +437,22 @@ class PemesananController extends Controller
         $langganan->desa_id = $desa_id;
         $langganan->detail_alamat = $detail_alamat;
 
-        $getprovinsi = Province::query()
-            ->where('id', '=', $provinsi_id)
-            ->get()
-            ->toArray();
-        $objectToArray = (array)$getprovinsi;
-        $prov1 = $objectToArray[0];
-        $prov2 = (array)$prov1;
-        $provinsi = $prov2['name'];
+        $getprovinsi = Province::query()->find($provinsi_id);
+        $provinsi = $getprovinsi->name;
 
-        $getkabupaten = Regency::query()
-            ->where('id', '=', $kabupaten_id)
-            ->get()
-            ->toArray();
-        $objectToArray = (array)$getkabupaten;
-        $kab1 = $objectToArray[0];
-        $kab2 = (array)$kab1;
-        $kabupaten = $kab2['name'];
+        $getkabupaten = Regency::query()->find($kabupaten_id);
+        $kabupaten = $getkabupaten->name;
 
-        $getkecamatan = District::query()
-            ->where('id', '=', $kecamatan_id)
-            ->get()
-            ->toArray();
-        $objectToArray = (array)$getkecamatan;
-        $kec1 = $objectToArray[0];
-        $kec2 = (array)$kec1;
-        $kecamatan = $kec2['name'];
+        $getkecamatan = District::query()->find($kecamatan_id);
+        $kecamatan = $getkecamatan->name;
 
-        $getdesa = Village::query()
-            ->where('id', '=', $desa_id)
-            ->get()
-            ->toArray();
-        $objectToArray = (array)$getdesa;
-        $desa1 = $objectToArray[0];
-        $desa2 = (array)$desa1;
-        $desa = $desa2['name'];
+        $getdesa = Village::query()->find($desa_id);
+        $desa = $getdesa->name;
 
         $alamat = $detail_alamat;
         $lengkap = array($alamat,$desa,$kecamatan,$kabupaten,$provinsi);
         $langganan->alamat_pasang = implode(", ",$lengkap);
-        $langganan->status = '3';
-        $langganan->harga_satuan = $harga;
+        $langganan->status_id = 1;
         $langganan->save();
 
         return redirect()->back()
@@ -471,25 +460,56 @@ class PemesananController extends Controller
     }
 
     public function setujui_pesan($id_langganan){
-        $getlang = Langganan::query()->find($id_langganan);
-        $getlang->status = '1';
-        $getlang->save();
+        $get_lang = Langganan::query()->find($id_langganan);
+        $pelanggan_id = $get_lang->pelanggan_id;
+        $user = User::query()->find($pelanggan_id);
+        $bts = Bts::all();
+        return view('dashboard.admin.pemesanan.approve', compact('get_lang', 'bts', 'user'));
+    }
 
-        $layanan_id = $getlang->layanan_id;
-        $harga = $getlang->harga_satuan;
-        $pelanggan_id = $getlang->pelanggan_id;
+    public function post_setujui_pesan(Request $request, $id_langganan){
+        $email2 = $request->email;
+        $bts_id = $request->id_bts;
+        $getturunan = $request->id_turunan;
+        if ($getturunan==0){
+            $turunan_id = null;
+        }else{
+            $turunan_id = $getturunan;
+        }
+        $ip = $request->ip;
+        $ip_radio = $request->ip_radio;
 
-        $getpel = User::query()->find($pelanggan_id);
-        $name = $getpel->name;
-        $username = $getpel->username;
-        $email = $getpel->email;
-        $pass = $getpel->password;
-        $nama_role = 'Pelanggan';
+        $getemail = User::query()
+            ->where('email','=',$email2)
+            ->get();
 
-        $password = Hash::make($pass);
-        $getpel->password = $password;
-        $getpel->status = '1';
-        $getpel->save();
+        if(count($getemail)>0){
+            return response()->json(['cek'=>1, 'msg'=>'Email sudah terpakai!']);
+        }else{
+            $getlang = Langganan::query()->find($id_langganan);
+            $getlang->bts_id = $bts_id;
+            $getlang->turunan_id = $turunan_id;
+            $getlang->ip = $ip;
+            $getlang->ip_radio = $ip_radio;
+            $getlang->status_id = 2;
+            $getlang->save();
+
+            $layanan_id = $getlang->layanan_id;
+            $pelanggan_id = $getlang->pelanggan_id;
+
+            $getpel = User::query()->find($pelanggan_id);
+            $name = $getpel->name;
+            $username = $getpel->username;
+            $email = $email2;
+            $pass = $getpel->password;
+            $nama_role = 'Pelanggan';
+
+            $password = Hash::make($pass);
+            $getpel->password = $password;
+            $getpel->status_id = 2;
+            $getpel->email = $email;
+            $getpel->save();
+        }
 
         $data_ambil = [
             'nama' => $name,
@@ -501,72 +521,85 @@ class PemesananController extends Controller
 
         Mail::to($email)->send(new MailAdmins($data_ambil));
 
-//        dd($pelanggan_id, $harga, $layanan_id);
-        $getharga = DB::table('langganans')
-            ->where('pelanggan_id', '=', $pelanggan_id)
-            ->where('status', '1')
-            ->sum('harga_satuan');
+        $getlayanan = Layanan::query()->find($layanan_id);
+        $harga = $getlayanan->harga;
 
-        $getinvoice = Invoice::query()
-            ->where('pelanggan_id', '=', $pelanggan_id)
-            ->where('status', '=', null)
-            ->get()
-            ->toArray();
+        $huruf = 'INV';
+        $acak1 = rand(10, 99);
+        $acak2 = rand(10, 99);
+        $bulan=Carbon::now()->format('n');
+        $lengkap = array($huruf,$acak1,$pelanggan_id,$acak2,$bulan);
+        $id_invoice = implode($lengkap);
 
-        if (count($getinvoice)>0){
-            $objectToArray = (array)$getinvoice;
-            $inv1 = $objectToArray[0];
-            $inv2 = (array)$inv1;
-            $id_inv = $inv2['id_invoice'];
-            DB::table('invoices')
-                ->where('id_invoice', $id_inv)
-                ->update([
-                    'harga_bayar' => $getharga,
-                ]);
+        $tgl_terbit = Carbon::now()->setTimezone('Asia/Jakarta');
 
-            $langinv = new Langinv();
-            $langinv->invoice_id = $id_inv;
-        }else{
-            $huruf = 'INV';
-            $acak1 = rand(10, 99);
-            $acak2 = rand(10, 99);
-            $bulan=Carbon::now()->format('n');
-            $lengkap = array($huruf,$acak1,$pelanggan_id,$acak2,$bulan);
-            $id_invoice = implode($lengkap);
+        $getppn = ProfilCv::query()->find(1);
+        $ppn = $getppn->ppn;
+        $hargappn = $harga*$ppn/100;
+        $harga2 = $harga+$hargappn;
 
-            $invoice = new Invoice();
-            $invoice->id_invoice = $id_invoice;
-            $invoice->pelanggan_id = $pelanggan_id;
-            $invoice->harga_bayar = $getharga;
-            $invoice->bulan = $bulan;
-            $invoice->status = null;
-            $invoice->save();
+        $invoice = new Invoice();
+        $invoice->id_invoice = $id_invoice;
+        $invoice->pelanggan_id = $pelanggan_id;
+        $invoice->harga_bayar = $harga2;
+        $invoice->tagihan = $harga2;
+        $invoice->tgl_terbit = $tgl_terbit;
+        $invoice->bulan = $bulan;
+        $invoice->ppn = 1;
+        $invoice->status_id = 6;
+        $invoice->save();
 
-            $langinv = new Langinv();
-            $langinv->invoice_id = $id_invoice;
-        }
+        $langinv = new Langinv();
+        $langinv->invoice_id = $id_invoice;
         $langinv->pelanggan_id = $pelanggan_id;
         $langinv->layanan_id = $layanan_id;
         $langinv->harga_satuan = $harga;
         $langinv->langganan_id = $id_langganan;
+        $langinv->status_id = 6;
         $langinv->save();
 
-        return redirect()->back()
-            ->with('success','Langganan berhasil ditambahkan.');
+        $langganans = Langinv::query()
+            ->where('pelanggan_id', '=', $pelanggan_id)
+            ->where('invoice_id', '=', $id_invoice)
+            ->where('status_id', '=', 6)
+            ->get();
+
+        $data_ambil = [
+            'email_cv' => 'info@gudangtechno.web.id',
+            'nama_pelanggan' => $name,
+            'email_pelanggan' => $email,
+            'no_hp_pelanggan' => $username,
+            'id_invoice' => $id_invoice,
+            'tgl_terbit' => $tgl_terbit,
+            'harga_bayar' => $harga2,
+            'langganans' => $langganans,
+        ];
+
+        Mail::to($email)->send(new Invoices($data_ambil));
+    }
+
+    public function tolak_langganan($id_langganan){
+        $langganan = Langganan::find($id_langganan);
+
+        $langganan->status_id = 5;
+        $langganan->save();
+
+        return redirect()->route('admin.langganan')
+            ->with('success','Status Langganan berhasil diubah.');
     }
 
 //    get from ajax
-    public function get_layanan(Request $request){
-        $id_kategori = $request->id_kategori;
+    public function get_turunan(Request $request)
+    {
+        $id_bts = $request->id_bts;
 
-        $layanans = Layanan::query()
-            ->where('layanan_kategori', $id_kategori)
-            ->orderBy('nama_layanan', 'ASC')
-            ->get();
+        $turunans = TurunanBts::query()
+            ->where('bts_id', '=', $id_bts)
+            ->where('status_id', '=', 4)->get();
 
-        $option = "<option>Pilih Layanan</option>";
-        foreach ($layanans as $layanan){
-            $option .= "<option value='$layanan->id_layanan'>$layanan->nama_layanan</option>";
+        $option = "<option value='0'>Pilih Pelanggan</option>";
+        foreach ($turunans as $turunan) {
+            $option .= "<option value='$turunan->id_turunan'>$turunan->nama_turunan</option>";
         }
         echo $option;
     }

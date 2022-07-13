@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('detail_bts', function (Blueprint $table) {
-            $table->increments('id_detail_bts');
-            $table->string('nama_alat');
-            $table->integer('bts_id')->unsigned();
-            $table->foreign('bts_id')->references('id_bts')->on('bts');
+        Schema::create('master_bts', function (Blueprint $table) {
+            $table->increments('id_master');
+            $table->char('provinsi_id');
+            $table->foreign('provinsi_id')->references('id')->on('provinces');
+            $table->char('kabupaten_id');
+            $table->foreign('kabupaten_id')->references('id')->on('regencies');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detail_bts');
+        Schema::dropIfExists('master_bts');
     }
 };

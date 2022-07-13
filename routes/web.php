@@ -33,7 +33,7 @@ Route::get('form_register', [RegisterController::class, 'form_register'])->name(
 Route::post('get_Kabupaten', [PemesananController::class, 'getKabupaten'])->name('getKabupaten');
 Route::post('get_Kecamatan', [PemesananController::class, 'getKecamatan'])->name('getKecamatan');
 Route::post('get_Desa', [PemesananController::class, 'getDesa'])->name('getDesa');
-Route::post('get_Layanan', [PemesananController::class, 'get_layanan'])->name('getLayanan');
+Route::post('get_turunan', [PemesananController::class, 'get_turunan'])->name('getTurunan');
 
 Route::group(['middleware'=>['userRole','auth']],function (){
     Route::get('edit-profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -46,26 +46,26 @@ Route::group(['prefix'=>'admin','middleware'=>['userRole','auth']],function (){
     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 //    Kelola User
     Route::get('data_user', [UserController::class, 'data_user'])->name('admin.user');
+    Route::get('data_pelanggan_aktif', [UserController::class, 'pelanggan_aktif'])->name('admin.pelangganaktif');
     Route::get('tambahuser', [UserController::class, 'tambah_user'])->name('admin.tambahuser');
     Route::post('postuser', [UserController::class, 'post_tambah_user'])->name('admin.postuser');
     Route::get('{id_user}/edituser', [UserController::class, 'edit_user'])->name('admin.edituser');
     Route::put('postedituser/{id_user}', [UserController::class, 'post_edit_user'])->name('admin.postedituser');
     Route::delete('delete_user/{id_user}', [UserController::class, 'destroy'])->name('admin.deleteuser');
-//    Kelola kategori
-    Route::get('data_kategori', [LayananController::class, 'index_kategori'])->name('admin.kategori');
-    Route::get('tambahkategori', [LayananController::class, 'tambah_kategori'])->name('admin.tambahkategori');
-    Route::post('postkategori', [LayananController::class, 'post_tambah_kategori'])->name('admin.postkategori');
-    Route::delete('delete_kategori/{id_kategori}', [LayananController::class, 'destroy'])->name('admin.deletekategori');
     //    Kelola layanan
     Route::get('data_layanan', [LayananController::class, 'index_layanan'])->name('admin.layanan');
     Route::get('tambahlayanan', [LayananController::class, 'tambah_layanan'])->name('admin.tambahlayanan');
     Route::post('postlayanan', [LayananController::class, 'post_tambah_layanan'])->name('admin.postlayanan');
     Route::get('{id_layanan}/editlayanan', [LayananController::class, 'edit_layanan'])->name('admin.editlayanan');
     Route::put('posteditlayanan/{id_layanan}', [LayananController::class, 'post_edit_layanan'])->name('admin.posteditlayanan');
-    Route::delete('delete_layanan/{id_layanan}', [LayananController::class, 'destroy_layanan'])->name('admin.deletelayanan');
+    Route::get('nonaktif_layanan/{id_layanan}', [LayananController::class, 'nonaktif_layanan'])->name('admin.nonaktiflayanan');
+    Route::get('aktif_layanan/{id_layanan}', [LayananController::class, 'aktif_layanan'])->name('admin.aktiflayanan');
     // kelola langganan
     Route::get('data_langganan', [LanggananController::class, 'semua_langganan'])->name('admin.langganan');
     Route::get('setujui/{id_langganan}', [PemesananController::class, 'setujui_pesan'])->name('admin.approvelangganan');
+    Route::put('postsetujui/{id_langganan}', [PemesananController::class, 'post_setujui_pesan'])->name('admin.postapprove');
+    Route::get('tolak/{id_langganan}', [PemesananController::class, 'tolak_langganan'])->name('admin.rejectlangganan');
+
     //pemesanan
     Route::get('pemesanan', [PemesananController::class, 'pemesanan'])->name('admin.form_pemesanan');
     Route::post('postpemesanan', [PemesananController::class, 'pelanggan_lama'])->name('pelanggan_lama');
@@ -73,11 +73,11 @@ Route::group(['prefix'=>'admin','middleware'=>['userRole','auth']],function (){
     Route::post('postpemesanan3', [PemesananController::class, 'pelanggan_onprogress'])->name('pelanggan_onprogress');
     //kelola invoice
     Route::get('data_invoice', [InvoiceController::class, 'data_invoice'])->name('admin.invoice');
-    Route::get('kirim_belum_kirim', [InvoiceController::class, 'kirim_belum'])->name('admin.kirimbelum');
-    Route::get('kirim_semua_invoice', [InvoiceController::class, 'kirim_semua'])->name('admin.kirimsemua');
+    Route::get('kirim_semua', [InvoiceController::class, 'kirim_semua'])->name('admin.kirimsemua');
     Route::get('setujui_pembayaran/{id_invoice}', [InvoiceController::class, 'setujui_pembayaran'])->name('admin.approvepembayaran');
     Route::get('tolak_pembayaran/{id_invoice}', [InvoiceController::class, 'tolak_pembayaran'])->name('admin.tolakpembayaran');
     Route::get('print/{id_invoice}', [InvoiceController::class, 'print_invoice'])->name('admin.printinv');
+    Route::post('detail_invoice', [InvoiceController::class, 'get_detail'])->name('getDetail');
 });
 
 Route::group(['prefix'=>'teknisi','middleware'=>['userRole','auth']],function (){

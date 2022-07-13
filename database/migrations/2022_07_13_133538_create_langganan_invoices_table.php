@@ -24,6 +24,8 @@ return new class extends Migration
             $table->integer('langganan_id')->unsigned();
             $table->foreign('langganan_id')->references('id_langganan')->on('langganans');
             $table->integer('harga_satuan');
+            $table->integer('status_id')->unsigned();
+            $table->foreign('status_id')->references('id_status')->on('status');
             $table->timestamps();
         });
     }

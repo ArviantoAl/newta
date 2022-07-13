@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('jenis_bts', function (Blueprint $table) {
-            $table->increments('id_jenis');
-            $table->string('nama_jenis');
+        Schema::create('perangkat_bts', function (Blueprint $table) {
+            $table->increments('id_perangkat_bts');
+            $table->string('nama_alat');
+            $table->integer('bts_id')->unsigned();
+            $table->foreign('bts_id')->references('id_bts')->on('bts');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jenis_bts');
+        Schema::dropIfExists('perangkat_bts');
     }
 };

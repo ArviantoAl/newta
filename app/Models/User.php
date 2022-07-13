@@ -54,12 +54,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'username',
         'password',
         'user_role',
-        'status',
-        'no_hp',
+        'status_id',
     ];
 
     public function role(){
         return $this->belongsTo(Role::class, 'user_role');
+    }
+    public function status(){
+        return $this->belongsTo(Status::class, 'status_id');
     }
     public function langganan(){
         return $this->hasMany(Langganan::class);

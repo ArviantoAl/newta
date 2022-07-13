@@ -54,20 +54,42 @@
                                                 </select>
                                             </div>
 
+                                            <div class="form-group">
+                                                <label for="layanan" class="form-label">Layanan</label>
+                                                <select name="layanan" id="layanan" class="form-control form-select select2" data-bs-placeholder="Pilih Layanan">
+                                                    <option>Pilih Layanan</option>
+                                                    @foreach ($layanan as $l)
+                                                        <option value="{{ $l->id_layanan }}">{{ $l->nama_layanan }} -
+                                                            {{rupiah($l->harga)}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
                                             <div class="row">
                                                 <div class="form-group col-6">
-                                                    <label for="kategori" class="form-label">Kategori</label>
-                                                    <select name="kategori" id="kategori" class="form-control form-select select2" data-bs-placeholder="Pilih Kategori">
-                                                        <option>Pilih Kategori</option>
-                                                        @foreach ($kategori as $k)
-                                                            <option value="{{ $k->id_kategori }}">{{ $k->nama_kategori }}</option>
+                                                    <label for="bts" class="form-label">BTS</label>
+                                                    <select name="bts" id="bts" class="form-control form-select select2" data-bs-placeholder="Pilih BTS">
+                                                        <option>Pilih BTS</option>
+                                                        @foreach ($bts as $b)
+                                                            <option value="{{ $b->id_bts }}">{{ $b->nama_bts }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
 
                                                 <div class="form-group col-6">
-                                                    <label for="layanan" class="form-label">Layanan</label>
-                                                    <select name="layanan" id="layanan" class="form-control form-select select2"></select>
+                                                    <label for="turunan" class="form-label">Sambungkan ke Pelanggan</label>
+                                                    <select name="turunan" id="turunan" class="form-control form-select select2"></select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-6">
+                                                    <label for="ip" class="form-label">IP Address</label>
+                                                    <input class="form-control" id="ip" name="ip" placeholder="Masukkan IP pelanggan" type="text" required autocomplete="ip" autofocus>
+                                                </div>
+                                                <div class="form-group col-6">
+                                                    <label for="ip_radio" class="form-label">IP Radio</label>
+                                                    <input class="form-control" id="ip_radio" name="ip_radio" placeholder="Masukkan IP Radio" type="text" required autocomplete="ip_radio" autofocus>
                                                 </div>
                                             </div>
 
@@ -125,33 +147,51 @@
                                                     <input class="form-control" id="email" name="email" placeholder="Masukkan Email" type="email" required autocomplete="email" autofocus>
                                                 </div>
                                                 <div class="form-group col-6">
-                                                    <label for="username" class="form-label">Username</label>
+                                                    <label for="username" class="form-label">No Hp</label>
                                                     <input class="form-control" id="username" name="username" placeholder="Masukkan Username" type="text" required autocomplete="username" autofocus>
                                                 </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="no_hp" class="form-label">No HP</label>
-                                                <input class="form-control" id="no_hp" name="no_hp" placeholder="Masukkan Nomor HP" type="text" required autocomplete="no_hp" autofocus>
                                             </div>
 
                                             <div class="form-divider">
                                                 {{ __('Pesan Langganan') }}
                                             </div>
 
+                                            <div class="form-group">
+                                                <label for="layanan2" class="form-label">Layanan</label>
+                                                <select name="layanan2" id="layanan2" class="form-control form-select select2" data-bs-placeholder="Pilih Layanan">
+                                                    <option>Pilih Layanan</option>
+                                                    @foreach ($layanan as $l)
+                                                        <option value="{{ $l->id_layanan }}">{{ $l->nama_layanan}} -
+                                                            {{rupiah($l->harga)}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
                                             <div class="row">
                                                 <div class="form-group col-6">
-                                                    <label for="kategori2" class="form-label">Kategori</label>
-                                                    <select name="kategori" id="kategori2" class="form-control form-select select2" data-bs-placeholder="Pilih Kategori">
-                                                        <option>Pilih Kategori</option>
-                                                        @foreach ($kategori as $k)
-                                                            <option value="{{ $k->id_kategori }}">{{ $k->nama_kategori }}</option>
+                                                    <label for="bts2" class="form-label">BTS</label>
+                                                    <select name="bts2" id="bts2" class="form-control form-select select2" data-bs-placeholder="Pilih BTS">
+                                                        <option>Pilih BTS</option>
+                                                        @foreach ($bts as $b)
+                                                            <option value="{{ $b->id_bts }}">{{ $b->nama_bts }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
 
                                                 <div class="form-group col-6">
-                                                    <label for="layanan2" class="form-label">Layanan</label>
-                                                    <select name="layanan" id="layanan2" class="form-control form-select select2"></select>
+                                                    <label for="turunan2" class="form-label">Sambungkan ke Pelanggan</label>
+                                                    <select name="turunan2" id="turunan2" class="form-control form-select select2"></select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-6">
+                                                    <label for="ip2" class="form-label">IP Address</label>
+                                                    <input class="form-control" id="ip2" name="ip2" placeholder="Masukkan IP pelanggan" type="text" required autocomplete="ip2" autofocus>
+                                                </div>
+                                                <div class="form-group col-6">
+                                                    <label for="ip_radio2" class="form-label">IP Radio</label>
+                                                    <input class="form-control" id="ip_radio2" name="ip_radio2" placeholder="Masukkan IP Radio" type="text" required autocomplete="ip_radio2" autofocus>
                                                 </div>
                                             </div>
 
@@ -201,47 +241,25 @@
                                         <form id="form3" action="{{ route('pelanggan_onprogress') }}">
                                             <div class="form-group">
                                                 <label for="name3" class="form-label">Nama</label>
-                                                <input class="form-control" id="name3" name="name" placeholder="Masukkan Nama Lengkap" type="text" required autocomplete="name" autofocus>
-                                            </div>
-                                            <div class="row">
-                                                <div class="form-group col-6">
-                                                    <label for="email3" class="form-label">Email</label>
-                                                    <input class="form-control @error('email3') is-invalid @enderror" id="email3" name="email" placeholder="Masukkan Email" type="email" required autocomplete="email" autofocus>
-                                                    @error('email3')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                    @enderror
-                                                </div>
-                                                <div class="form-group col-6">
-                                                    <label for="username3" class="form-label">Username</label>
-                                                    <input class="form-control" id="username3" name="username" placeholder="Masukkan Username" type="text" required autocomplete="username" autofocus>
-                                                </div>
+                                                <input class="form-control" id="name3" name="name3" placeholder="Masukkan Nama Lengkap" type="text" required autocomplete="name3" autofocus>
                                             </div>
                                             <div class="form-group">
-                                                <label for="no_hp3" class="form-label">No HP</label>
-                                                <input class="form-control" id="no_hp3" name="no_hp" placeholder="Masukkan Nomor HP" type="text" required autocomplete="no_hp" autofocus>
+                                                <label for="username3" class="form-label">No HP</label>
+                                                <input class="form-control" id="username3" name="username3" placeholder="Masukkan No HP" type="text" required autocomplete="username3" autofocus>
                                             </div>
 
                                             <div class="form-divider">
                                                 {{ __('Pesan Langganan') }}
                                             </div>
 
-                                            <div class="row">
-                                                <div class="form-group col-6">
-                                                    <label for="kategori3" class="form-label">Kategori</label>
-                                                    <select name="kategori" id="kategori3" class="form-control form-select select2" data-bs-placeholder="Pilih Kategori">
-                                                        <option>Pilih Kategori</option>
-                                                        @foreach ($kategori as $k)
-                                                            <option value="{{ $k->id_kategori }}">{{ $k->nama_kategori }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-
-                                                <div class="form-group col-6">
-                                                    <label for="layanan3" class="form-label">Layanan</label>
-                                                    <select name="layanan" id="layanan3" class="form-control form-select select2"></select>
-                                                </div>
+                                            <div class="form-group">
+                                                <label for="layanan3" class="form-label">Layanan</label>
+                                                <select name="layanan3" id="layanan3" class="form-control form-select select2" data-bs-placeholder="Pilih Layanan">
+                                                    <option>Pilih Layanan</option>
+                                                    @foreach ($layanan as $l)
+                                                        <option value="{{ $l->id_layanan }}">{{ $l->nama_layanan }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
 
                                             <div class="form-divider">
@@ -251,7 +269,7 @@
                                             <div class="row">
                                                 <div class="form-group col-6">
                                                     <label for="provinsi3" class="form-label">Provinsi</label>
-                                                    <select name="provinsi" id="provinsi3" class="form-control form-select select2" data-bs-placeholder="Pilih Provinsi">
+                                                    <select name="provinsi3" id="provinsi3" class="form-control form-select select2" data-bs-placeholder="Pilih Provinsi">
                                                         <option>Pilih Provinsi</option>
                                                         @foreach ($provinsi as $p)
                                                             <option value="{{ $p->id }}">{{ $p->name }}</option>
@@ -261,19 +279,19 @@
 
                                                 <div class="form-group col-6">
                                                     <label for="kabupaten3" class="form-label">Kabupaten/Kota</label>
-                                                    <select name="kabupaten" id="kabupaten3" class="form-control form-select select2"></select>
+                                                    <select name="kabupaten3" id="kabupaten3" class="form-control form-select select2"></select>
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="form-group col-6">
                                                     <label for="kecamatan3" class="form-label">Kecamatan</label>
-                                                    <select name="kecamatan" id="kecamatan3" class="form-control form-select select2"></select>
+                                                    <select name="kecamatan3" id="kecamatan3" class="form-control form-select select2"></select>
                                                 </div>
 
                                                 <div class="form-group col-6">
                                                     <label for="desa3" class="form-label">Desa/Kelurahan</label>
-                                                    <select name="desa" id="desa3" class="form-control form-select select2"></select>
+                                                    <select name="desa3" id="desa3" class="form-control form-select select2"></select>
                                                 </div>
                                             </div>
 
@@ -306,25 +324,25 @@
 
             $(function () {
 // pelanggan lama
-                $('#kategori').on('change', function () {
-                    var id_kategori = $('#kategori').val();
-                    console.log(id_kategori);
+                $('#bts').on('change', function () {
+                    var id_bts = $('#bts').val();
+                    console.log(id_bts);
                     $.ajax({
                         type: "POST",
-                        url: "{{route('getLayanan')}}",
-                        data: {id_kategori: id_kategori},
+                        url: "{{route('getTurunan')}}",
+                        data: {id_bts: id_bts},
                         cache: false,
                         success: function (msg) {
-                            $('#layanan').html(msg);
+                            $('#turunan').html(msg);
                         },
                         error: function (data) {
                             console.log('error:', data);
                         }
                     })
                 })
-                $('#layanan').on('change',function (){
-                    var id_layanan = $('#layanan').val();
-                    console.log(id_layanan);
+                $('#turunan').on('change',function (){
+                    var id_turunan = $('#turunan').val();
+                    console.log(id_turunan);
                 })
                 $('#provinsi').on('change',function (){
                     var id_provinsi = $('#provinsi').val();
@@ -385,6 +403,10 @@
                     e.preventDefault();
                     var id_user = $('#user').val();
                     var id_layanan = $('#layanan').val();
+                    var id_bts = $('#bts').val();
+                    var id_turunan = $('#turunan').val();
+                    var ip = $('#ip').val();
+                    var ip_radio = $('#ip_radio').val();
                     var id_provinsi = $('#provinsi').val();
                     var id_kabupaten = $('#kabupaten').val();
                     var id_kecamatan = $('#kecamatan').val();
@@ -397,6 +419,10 @@
                         data: {
                             id_user: id_user,
                             id_layanan: id_layanan,
+                            id_bts: id_bts,
+                            id_turunan: id_turunan,
+                            ip: ip,
+                            ip_radio: ip_radio,
                             id_provinsi: id_provinsi,
                             id_kabupaten: id_kabupaten,
                             id_kecamatan: id_kecamatan,
@@ -417,25 +443,25 @@
 // end
 
 // pelanggan baru
-                $('#kategori2').on('change', function () {
-                    var id_kategori2 = $('#kategori2').val();
-                    console.log(id_kategori2);
+                $('#bts2').on('change', function () {
+                    var id_bts2 = $('#bts2').val();
+                    console.log(id_bts2);
                     $.ajax({
                         type: "POST",
-                        url: "{{route('getLayanan')}}",
-                        data: {id_kategori: id_kategori2},
+                        url: "{{route('getTurunan')}}",
+                        data: {id_bts: id_bts2},
                         cache: false,
                         success: function (msg) {
-                            $('#layanan2').html(msg);
+                            $('#turunan2').html(msg);
                         },
                         error: function (data) {
                             console.log('error:', data);
                         }
                     })
                 })
-                $('#layanan2').on('change',function (){
-                    var id_layanan2 = $('#layanan2').val();
-                    console.log(id_layanan2);
+                $('#turunan2').on('change',function (){
+                    var id_turunan2 = $('#turunan2').val();
+                    console.log(id_turunan2);
                 })
                 $('#provinsi2').on('change',function (){
                     var id_provinsi2 = $('#provinsi2').val();
@@ -497,8 +523,11 @@
                     var name = $('#name').val();
                     var email = $('#email').val();
                     var username = $('#username').val();
-                    var no_hp = $('#no_hp').val();
                     var id_layanan = $('#layanan2').val();
+                    var id_bts = $('#bts2').val();
+                    var id_turunan = $('#turunan2').val();
+                    var ip = $('#ip2').val();
+                    var ip_radio = $('#ip_radio2').val();
                     var id_provinsi = $('#provinsi2').val();
                     var id_kabupaten = $('#kabupaten2').val();
                     var id_kecamatan = $('#kecamatan2').val();
@@ -512,8 +541,11 @@
                             name: name,
                             email: email,
                             username: username,
-                            no_hp: no_hp,
                             id_layanan: id_layanan,
+                            id_bts: id_bts,
+                            id_turunan: id_turunan,
+                            ip: ip,
+                            ip_radio: ip_radio,
                             id_provinsi: id_provinsi,
                             id_kabupaten: id_kabupaten,
                             id_kecamatan: id_kecamatan,
@@ -542,22 +574,7 @@
 // end
 
 // pelanggan on progress
-                $('#kategori3').on('change', function () {
-                    var id_kategori3 = $('#kategori3').val();
-                    console.log(id_kategori3);
-                    $.ajax({
-                        type: "POST",
-                        url: "{{route('getLayanan')}}",
-                        data: {id_kategori: id_kategori3},
-                        cache: false,
-                        success: function (msg) {
-                            $('#layanan3').html(msg);
-                        },
-                        error: function (data) {
-                            console.log('error:', data);
-                        }
-                    })
-                })
+
                 $('#layanan3').on('change',function (){
                     var id_layanan3 = $('#layanan3').val();
                     console.log(id_layanan3);
@@ -620,9 +637,7 @@
                 $("#form3").submit(function (e) {
                     e.preventDefault();
                     var name = $('#name3').val();
-                    var email = $('#email3').val();
                     var username = $('#username3').val();
-                    var no_hp = $('#no_hp3').val();
                     var id_layanan = $('#layanan3').val();
                     var id_provinsi = $('#provinsi3').val();
                     var id_kabupaten = $('#kabupaten3').val();
@@ -635,9 +650,7 @@
                         url: "{{route('pelanggan_onprogress')}}",
                         data: {
                             name: name,
-                            email: email,
                             username: username,
-                            no_hp: no_hp,
                             id_layanan: id_layanan,
                             id_provinsi: id_provinsi,
                             id_kabupaten: id_kabupaten,
@@ -658,9 +671,7 @@
                                 window.location.href = "{{route('admin.langganan')}}";
                             }
                         },
-                        error: function (data) {
-                            alert("Email atau Username sudah dipakai");
-                            var errors = data.responseJSON;
+                        error: function (data) {var errors = data.responseJSON;
                             console.log(errors);
                         }
                     })

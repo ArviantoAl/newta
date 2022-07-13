@@ -47,13 +47,9 @@
                             <input class="form-control" id="email" name="email" value="{{ $user->email }}" placeholder="Masukkan Email" type="email" required autocomplete="email" autofocus>
                         </div>
                         <div class="form-group col-6">
-                            <label for="username" class="form-label">Username</label>
+                            <label for="username" class="form-label">No Hp</label>
                             <input class="form-control" id="username" name="username" value="{{ $user->username }}" placeholder="Masukkan Username" type="text" required autocomplete="username" autofocus>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="no_hp" class="form-label">No HP</label>
-                        <input class="form-control" id="no_hp" name="no_hp" value="{{ $user->no_hp }}" placeholder="Masukkan Nomor HP" type="text" required autocomplete="no_hp" autofocus>
                     </div>
                     {{--                    </div>--}}
                     <button type="submit" class="btn btn-primary mt-3 mb-0">Submit</button>

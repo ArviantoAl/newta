@@ -463,6 +463,7 @@
     </div>
     <!-- main-content closed -->
         @yield('modal')
+        @yield('modal2')
 
 {{--    --}}
 {{--    <!-- Sidebar-right-->--}}

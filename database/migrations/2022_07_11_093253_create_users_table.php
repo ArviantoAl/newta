@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('password');
             $table->integer('user_role')->unsigned();
             $table->foreign('user_role')->references('id_role')->on('roles');
-            $table->enum('status',['1','0'])->nullable(); //1=aktif, 0=onprogress
-            $table->string('no_hp')->nullable();
+            $table->integer('status_id')->unsigned();
+            $table->foreign('status_id')->references('id_status')->on('status');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

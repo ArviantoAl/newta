@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DetailBts extends Model
+class PerangkatBts extends Model
 {
     use HasFactory;
-    protected $table = 'detail_bts';
-    protected $primaryKey = 'id_detail_bts';
+    protected $table = 'perangkat_bts';
+    protected $primaryKey = 'id_perangkat_bts';
     public $incrementing = true;
     protected $fillable = [
-        'bts_id',
         'nama_alat',
+        'bts_id',
     ];
 
     public function bts(){

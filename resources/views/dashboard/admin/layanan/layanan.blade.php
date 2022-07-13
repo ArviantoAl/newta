@@ -27,10 +27,9 @@
                             <thead style="text-align: center">
                             <tr>
                                 <th>No</th>
-                                <th>Kategori Layanan</th>
-                                <th>Nama BTS</th>
                                 <th>Jenis Layanan</th>
                                 <th>Harga</th>
+                                <th>Status</th>
                                 <th colspan="2">Action</th>
                             </tr>
                             </thead>
@@ -38,24 +37,36 @@
                             @foreach ($layanans as $no => $layanan)
                                 <tr>
                                     <td>{{ $no+1 }}</td>
-                                    <td>{{ $layanan->kategori->nama_kategori }}</td>
-                                    <td>{{ $layanan->bts->nama_bts }}</td>
                                     <td>{{ $layanan->nama_layanan }}</td>
                                     <td>{{ rupiah($layanan->harga) }}</td>
-                                    <td>
-                                        <a class="btn btn-warning" href="{{ route('admin.editlayanan', $layanan->id_layanan) }}" data-toggle="tooltip" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <form action="{{ route('admin.deletelayanan', $layanan->id_layanan) }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <button class="btn btn-danger" type="submit" data-toggle="tooltip" title="Hapus">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
+                                    @if($layanan->status_id == 3)
+                                        <td>
+                                            <h5>
+                                                <span class="badge badge-pill bg-success me-1">{{ $layanan->status->nama_status }}</span>
+                                            </h5>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-warning" href="{{ route('admin.editlayanan', $layanan->id_layanan) }}" data-toggle="tooltip" title="Edit">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-danger" href="{{ route('admin.nonaktiflayanan', $layanan->id_layanan) }}" data-toggle="tooltip" title="Nonaktif">
+                                                <i class="fa fa-ban"></i>
+                                            </a>
+                                        </td>
+                                    @elseif($layanan->status_id == 4)
+                                        <td>
+                                            <h5>
+                                                <span class="badge badge-pill bg-danger me-1">{{ $layanan->status->nama_status }}</span>
+                                            </h5>
+                                        </td>
+                                        <td colspan="2">
+                                            <a class="btn btn-success" href="{{ route('admin.aktiflayanan', $layanan->id_layanan) }}" data-toggle="tooltip" title="Aktifkan">
+                                                <i class="fa fa-check"></i>
+                                            </a>
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
                             </tbody>

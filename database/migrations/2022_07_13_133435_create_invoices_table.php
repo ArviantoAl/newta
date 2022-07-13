@@ -20,8 +20,11 @@ return new class extends Migration
             $table->timestamp('tgl_terbit')->nullable();
             $table->timestamp('tgl_tempo')->nullable();
             $table->integer('harga_bayar');
+            $table->integer('tagihan');
             $table->integer('bulan');
-            $table->enum('status',['2','1','0'])->nullable(); //2=lunas, 1=pending, 0=nonaktif, null=belum dikirim
+            $table->tinyInteger('ppn')->nullable();
+            $table->integer('status_id')->unsigned();
+            $table->foreign('status_id')->references('id_status')->on('status');
             $table->string('bukti_bayar')->nullable();
             $table->timestamps();
         });

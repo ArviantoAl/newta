@@ -257,11 +257,7 @@ class InvoiceController extends Controller
                 'tgl_lanjut' => $tgl_lanjut
             ]);
 
-        if (auth()->user()->user_role==1){
-            return redirect()->route('admin.invoice');
-        }elseif(auth()->user()->user_role==3){
-            return redirect()->route('teknisi.invoice');
-        }
+        return redirect()->route('admin.invoice');
 //        dd($id_langganan);
     }
 

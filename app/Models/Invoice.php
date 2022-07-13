@@ -19,12 +19,19 @@ class Invoice extends Model
         'tgl_terbit',
         'tgl_tempo',
         'harga_bayar',
-        'status',
+        'tagihan',
+        'status_id',
         'bukti_bayar',
         'bulan'
     ];
 
     public function pelanggan(){
         return $this->belongsTo(User::class, 'pelanggan_id');
+    }
+    public function status(){
+        return $this->belongsTo(Status::class, 'status_id');
+    }
+    public function langinv(){
+        return $this->hasMany(Langinv::class);
     }
 }

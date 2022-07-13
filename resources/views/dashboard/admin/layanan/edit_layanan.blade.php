@@ -29,24 +29,6 @@
                     @method('PUT')
                     {{--                    <div class="">--}}
                     <div class="form-group">
-                        <label for="kategori" class="form-label">{{ __('Kategori') }}</label>
-                        <select id="kategori" name="layanan_kategori" class="form-control form-select select2" data-bs-placeholder="Pilih Kategori">
-                            <option value="{{ $layanan->layanan_kategori }}">{{ $layanan->kategori->nama_kategori }}</option>
-                            @foreach ($kategoris as $jenis)
-                                <option value="{{ $jenis->id_kategori }}">{{ $jenis->nama_kategori }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="bts_id" class="form-label">{{ __('BTS') }}</label>
-                        <select id="bts_id" name="bts_id" class="form-control form-select select2" data-bs-placeholder="Pilih BTS">
-                            <option value="{{ $layanan->bts_id }}">{{ $layanan->bts->nama_bts }}</option>
-                            @foreach ($btss as $bts)
-                                <option value="{{ $bts->id_bts }}">{{ $bts->nama_bts }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label for="nama_layanan" class="form-label">Nama Layanan</label>
                         <input class="form-control" id="nama_layanan" name="nama_layanan" value="{{ $layanan->nama_layanan }}" placeholder="Masukkan Nama Layanan" type="text" required autocomplete="nama_layanan" autofocus>
                     </div>

@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('langganans', function (Blueprint $table) {
-            $table->increments('id_langganan');
-            $table->integer('pelanggan_id')->unsigned();
-            $table->foreign('pelanggan_id')->references('id_user')->on('users');
-            $table->integer('layanan_id')->unsigned();
-            $table->foreign('layanan_id')->references('id_layanan')->on('layanans');
+        Schema::create('turunan_bts', function (Blueprint $table) {
+            $table->increments('id_turunan');
+            $table->integer('bts_id')->unsigned();
+            $table->foreign('bts_id')->references('id_bts')->on('bts');
+            $table->string('nama_turunan');
             $table->char('provinsi_id');
             $table->foreign('provinsi_id')->references('id')->on('provinces');
             $table->char('kabupaten_id');
@@ -29,10 +28,12 @@ return new class extends Migration
             $table->foreign('desa_id')->references('id')->on('villages');
             $table->longText('detail_alamat');
             $table->longText('alamat_pasang')->nullable(); //untuk di implode jadi satu
-            $table->enum('status',['3','2','1','0'])->nullable(); // 3(on progress), 2(aktif), 1(pending) 0(nonaktif)
-            $table->integer('harga_satuan');
-            $table->timestamp('tgl_aktif')->nullable();
-            $table->timestamp('tgl_lanjut')->nullable();
+            $table->string('frekuensi');
+            $table->string('ssid');
+            $table->string('ip');
+            $table->string('lokasi')->nullable();
+            $table->integer('status_id')->unsigned();
+            $table->foreign('status_id')->references('id_status')->on('status');
             $table->timestamps();
         });
     }
@@ -44,6 +45,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('langganans');
+        Schema::dropIfExists('turunan_bts');
     }
 };

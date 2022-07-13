@@ -14,16 +14,21 @@ use Illuminate\Support\Facades\Mail;
 class UserController extends Controller
 {
     public function data_user(){
-        $roles = Role::all();
         $users = User::query()->paginate(10);
-        return view('dashboard.admin.user.user', compact('roles', 'users'));
+        return view('dashboard.admin.user.user', compact('users'));
+    }
+
+    public function pelanggan_aktif(){
+        $users = User::query()->where('user_role', '=', 3)
+            ->where('status_id', '=', 3)
+            ->paginate(10);
+        return view('dashboard.admin.user.pelanggan_aktif', compact('users'));
     }
 
     public function tambah_user(){
         $roles = Role::all();
-        $provincies = Province::all();
         $user = new User();
-        return view('dashboard.admin.user.tambah_user', compact('roles', 'user', 'provincies'));
+        return view('dashboard.admin.user.tambah_user', compact('roles', 'user'));
     }
 
     public function post_tambah_user(Request $request){
@@ -45,8 +50,7 @@ class UserController extends Controller
         $user->email = $email;
         $user->password = $password;
         $user->user_role = $request->user_role;
-        $user->no_hp = $request->no_hp;
-        $user->status = '1';
+        $user->status_id = 3;
 
         if ($request->user_role == 1){
             $nama_role = 'Admin';

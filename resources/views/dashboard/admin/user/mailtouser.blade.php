@@ -316,7 +316,7 @@
                             <tr>
                                 <td class="content-cell">
                                     <h1>Hello, {{ $data_ambil['nama'] }}!</h1>
-                                    <p>Kami telah membuat akun admin untuk Anda. Sesuai dengan email {{ $data_ambil['email'] }} / username {{ $data_ambil['username'] }} dan dengan kata sandi:</p>
+                                    <p>Kami telah membuat akun admin untuk Anda. Sesuai dengan email {{ $data_ambil['email'] }} / No Hp {{ $data_ambil['username'] }} dan dengan kata sandi:</p>
                                     <h1>{{ $data_ambil['password'] }}</h1>
                                     <p>Jika ingin mengganti kata sandi Anda. Masuk ke Halaman Edit Profil, isi form Ubah Kata Sandi. Masukkan kata sandi saat ini dengan kata sandi yang kami kirim.</p>
                                     <p>Salam, <br>{{ config('app.name') }}</p>

@@ -16,7 +16,8 @@ class Langinv extends Model
         'pelanggan_id',
         'layanan_id',
         'langganan_id',
-        'harga_satuan'
+        'harga_satuan',
+        'status_id',
     ];
     public function layanan(){
         return $this->belongsTo(Layanan::class, 'layanan_id');
@@ -26,5 +27,11 @@ class Langinv extends Model
     }
     public function langganan(){
         return $this->belongsTo(Langganan::class, 'langganan_id');
+    }
+    public function invoice(){
+        return $this->belongsTo(Invoice::class, 'invoice_id');
+    }
+    public function status(){
+        return $this->belongsTo(Status::class, 'status_id');
     }
 }

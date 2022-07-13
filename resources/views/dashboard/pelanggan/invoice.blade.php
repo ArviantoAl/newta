@@ -20,14 +20,6 @@
     <!-- Row -->
     <div class="row row-sm">
         <div class="col-lg-12">
-            @if(count($datas)>0)
-                <a class="btn btn-success" href="{{ route('admin.kirimbelum') }}">
-                    Kirim Invoice Belum Dikirim
-                </a>
-                <a class="btn btn-success" href="{{ route('admin.kirimsemua') }}">
-                    Kirim Invoice Bulan Ini
-                </a>
-            @endif
             <div class="card custom-card overflow-hidden">
                 <div class="card-body">
                     @if (session()->has('success'))
@@ -43,8 +35,8 @@
                                 <th>Id Invoice</th>
                                 <th>Tanggal Terbit</th>
                                 <th>Tanggal Tempo</th>
-                                <th>Harga Bayar</th>
-                                <th>Status</th>
+                                <th>Total Tagihan</th>
+                                <th>Status Terakhir</th>
                                 <th colspan="2">Action</th>
                             </tr>
                             </thead>
@@ -54,38 +46,32 @@
                                     <td>{{ $invoice->id_invoice }}</td>
                                     <td>{{ $invoice->tgl_terbit }}</td>
                                     <td>{{ $invoice->tgl_tempo }}</td>
-                                    <td>{{ rupiah($invoice->harga_bayar) }}</td>
-                                    @if($invoice->status == null)
+                                    <td>{{ rupiah($invoice->tagihan) }}</td>
+                                    @if($invoice->status_id == 6)
                                         <td>
-                                            <h5><span class="badge badge-pill bg-info me-1">Belum Dikirim</span></h5>
+                                            <h5><span class="badge badge-pill bg-warning me-1">{{ $invoice->status->nama_status }}</span></h5>
                                         </td>
-                                    @elseif($invoice->status == '0')
                                         <td>
-                                            <h5><span class="badge badge-pill bg-info me-1">Tidak Aktif</span></h5>
+                                            <a class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#demo{{$invoice->id_invoice}}" data-toggle="tooltip" title="Upload Bukti Pembayaran">
+                                                <i class="fa fa-upload"></i>
+                                            </a>
                                         </td>
-                                    @elseif($invoice->status == '1')
-                                        @if($invoice->bukti_bayar == null)
-                                            <td>
-                                                <h5><span class="badge badge-pill bg-info me-1">Menunggu Pembayaran</span></h5>
-                                            </td>
-                                            <td>
-                                                <a class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#demo{{$invoice->id_invoice}}" data-toggle="tooltip" title="Upload Bukti Pembayaran">
-                                                    <i class="fa fa-upload"></i>
-                                                </a>
-                                            </td>
-                                        @else
-                                            <td>
-                                                <h5><span class="badge badge-pill bg-info me-1">Sudah Dibayar</span></h5>
-                                            </td>
-                                            <td>
-                                                <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModal{{$invoice->id_invoice}}" data-toggle="tooltip" title="Lihat Bukti Bayar">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        @endif
-                                    @elseif($invoice->status == '2')
+                                    @elseif($invoice->status_id == 7)
                                         <td>
-                                            <h5><span class="badge badge-pill bg-info me-1">Lunas</span></h5>
+                                            <h5><span class="badge badge-pill bg-warning me-1">{{ $invoice->status->nama_status }}</span></h5>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModal{{$invoice->id_invoice}}" data-toggle="tooltip" title="Lihat Bukti Bayar">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    @elseif($invoice->status_id == 8)
+                                        <td>
+                                            <h5><span class="badge badge-pill bg-success me-1">{{ $invoice->status->nama_status }}</span></h5>
+                                        </td>
+                                    @elseif($invoice->status_id == 9)
+                                        <td>
+                                            <h5><span class="badge badge-pill bg-danger me-1">{{ $invoice->status->nama_status }}</span></h5>
                                         </td>
                                     @endif
                                     <td>
@@ -131,7 +117,7 @@
                     <!-- Modal Header -->
                     <div class="modal-header">
                         <h4 class="modal-title">Bukti pembayaran {{$invoice->id_invoice}}</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                     </div>
 
                     <!-- Modal body -->

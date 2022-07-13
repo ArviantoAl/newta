@@ -18,14 +18,24 @@ class Bts extends Model
         'kabupaten_id',
         'kecamatan_id',
         'desa_id',
-        'status',
+        'detail_alamat',
+        'alamat_pasang',
+        'kategori_id',
+        'status_id',
+        'frekuensi',
+        'ssid',
+        'ip',
+        'lokasi',
     ];
 
-    public function layanan(){
-        return $this->hasMany(Layanan::class);
-    }
     public function jenis(){
         return $this->belongsTo(JenisBts::class, 'jenis_id');
+    }
+    public function status(){
+        return $this->belongsTo(Status::class, 'status_id');
+    }
+    public function kategori(){
+        return $this->belongsTo(Kategori::class, 'kategori_id');
     }
     public function provinsi(){
         return $this->belongsTo(Province::class, 'provinsi_id');
@@ -38,5 +48,14 @@ class Bts extends Model
     }
     public function desa(){
         return $this->belongsTo(Village::class, 'desa_id');
+    }
+    public function langganan(){
+        return $this->hasMany(Langganan::class);
+    }
+    public function turunan(){
+        return $this->hasMany(TurunanBts::class);
+    }
+    public function perangkatbts(){
+        return $this->hasMany(PerangkatBts::class);
     }
 }

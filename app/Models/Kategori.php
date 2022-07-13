@@ -13,13 +13,10 @@ class Kategori extends Model
     protected $primaryKey = 'id_kategori';
     public $incrementing = true;
     protected $fillable = [
-        'nama_kategori',
+        'kategori_frekuensi',
     ];
 
-    public function layanan(){
-        return $this->hasMany(Layanan::class);
-    }
-    public function langganan(){
-        return $this->hasMany(Langganan::class);
+    public function bts(){
+        return $this->hasMany(Bts::class);
     }
 }

@@ -8386,7 +8386,7 @@
         <div class="card-header">
             Invoice
             <strong>{{ $data_ambil['id_invoice'] }}</strong>
-            <span class="float-right"> <strong>Status:</strong> Belum Lunas</span>
+            <span class="float-right"> <strong>Status:</strong> Belum Dibayar</span>
 
         </div>
         <div class="card-body">
@@ -8405,7 +8405,6 @@
                     <div>
                         <strong>{{ $data_ambil['nama_pelanggan'] }}</strong>
                     </div>
-                    <div>{{ $data_ambil['alamat_pelanggan'] }}</div>
                     <div>Email: {{ $data_ambil['email_pelanggan'] }}</div>
                     <div>Phone: {{ $data_ambil['no_hp_pelanggan'] }}</div>
                 </div>
@@ -8418,6 +8417,7 @@
                         <th>#</th>
                         <th>Langganan</th>
                         <th>Alamat Pemasangan</th>
+                        <th>Status Langganan</th>
                         <th>Harga Langganan</th>
                     </tr>
                     </thead>
@@ -8426,8 +8426,13 @@
                     <tr>
                         <td>{{ $no+1 }}</td>
                         <td>{{ $langganan->layanan->nama_layanan }}</td>
-                        <td>{{ $langganan->alamat_pasang }}</td>
-                        <td>{{ $langganan->harga_satuan }}</td>
+                        <td>{{ $langganan->langganan->alamat_pasang }}</td>
+                        <td>{{ $langganan->status->nama_status }}</td>
+                        @if($langganan->status_id == 6)
+                            <td>{{ rupiah($langganan->layanan->harga) }}</td>
+                        @else
+                            <td>{{ rupiah(0) }}</td>
+                        @endif
                     </tr>
                     @endforeach
                     </tbody>
@@ -8442,7 +8447,7 @@
                                 <strong>Total</strong>
                             </td>
                             <td>
-                                <div>{{ $data_ambil['harga_bayar'] }}</div>
+                                <div>{{ rupiah($data_ambil['harga_bayar']) }}</div>
                             </td>
                         </tr>
                         </tbody>

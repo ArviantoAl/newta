@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('bts', function (Blueprint $table) {
             $table->increments('id_bts');
             $table->string('nama_bts');
+            $table->integer('kategori_id')->unsigned();
+            $table->foreign('kategori_id')->references('id_kategori')->on('kategoris');
             $table->integer('jenis_id')->unsigned();
             $table->foreign('jenis_id')->references('id_jenis')->on('jenis_bts');
             $table->char('provinsi_id');
@@ -28,7 +30,12 @@ return new class extends Migration
             $table->foreign('desa_id')->references('id')->on('villages');
             $table->longText('detail_alamat');
             $table->longText('alamat_pasang')->nullable(); //untuk di implode jadi satu
-            $table->enum('status',['1','0'])->nullable(); //1=aktif, 0=nonaktif
+            $table->string('frekuensi');
+            $table->string('ssid');
+            $table->string('ip');
+            $table->string('lokasi')->nullable();
+            $table->integer('status_id')->unsigned();
+            $table->foreign('status_id')->references('id_status')->on('status');
             $table->timestamps();
         });
     }

@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Mail\Invoice;
+use App\Models\Bts;
 use App\Models\Invoice as Invoices;
 use App\Models\Langganan;
 use App\Models\Langinv;
+use App\Models\Layanan;
+use App\Models\ProfilCv;
+use App\Models\TurunanBts;
 use App\Models\User;
+use App\Models\Village;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -22,127 +27,216 @@ class InvoiceController extends Controller
         }else{
             $invoices = Invoices::query()->paginate(10);
         }
-        $datas = Invoices::query()
-            ->where('status', '=', null)
-            ->get();
         $tanggal = Carbon::now()->setTimezone('Asia/Jakarta');
+        $langganan = Langinv::all();
 
         if (auth()->user()->user_role==1){
-            return view('dashboard.admin.invoice', compact('invoices', 'tanggal', 'datas'));
+            return view('dashboard.admin.invoice', compact('invoices', 'tanggal'));
         }elseif(auth()->user()->user_role==2){
-            return view('dashboard.teknisi.invoice', compact('invoices', 'tanggal', 'datas'));
+            return view('dashboard.teknisi.invoice', compact('invoices', 'tanggal'));
         }elseif(auth()->user()->user_role==3){
-            return view('dashboard.pelanggan.invoice', compact('invoices', 'tanggal', 'datas'));
+            return view('dashboard.pelanggan.invoice', compact('invoices', 'tanggal'));
         }
     }
 
-    public function kirim_belum(){
-        $datas = Invoices::query()
-            ->where('status', '=', null)
-            ->get();
+    public function kirim_semua(){
+        $bulan=Carbon::now()->subMonth()->format('n');
+        $bulans=Carbon::now()->format('n');
 
+        $datas = Invoices::query()
+            ->where('bulan', '=', $bulan)
+            ->where('status_id', '=', 8)
+            ->get();
+//dd($bulan);
 //        $datainv = [];
         foreach($datas as $data){
             $pelanggan_id = $data->pelanggan_id;
-            $harga_bayar = $data->harga_bayar;
+//            $harga_bayar = $data->harga_bayar;
             $id_invoice = $data->id_invoice;
+            $ppn = $data->ppn;
+
+            $gettagihan = DB::table('langganan_invoices')
+                ->where('pelanggan_id', '=', $pelanggan_id)
+                ->where('invoice_id', '=', $id_invoice)
+                ->where('status_id', '=', 8)
+                ->sum('harga_satuan');
+
+            if ($ppn == 1){
+                $getppn = ProfilCv::query()->find(1);
+                $hppn = $getppn->ppn;
+                $hargappn = $gettagihan*$hppn/100;
+                $hgettagihan = $gettagihan+$hargappn;
+                $hargatagihan = $hgettagihan;
+            }else{
+                $hargatagihan = $hgettagihan;
+            }
 
             $user = User::find($pelanggan_id);
             $nama_pelanggan = $user->name;
+            $username_pelanggan = $user->username;
             $email_pelanggan = $user->email;
-            $no_hp_pelanggan = $user->no_hp;
-            $alamat_pelanggan = $user->alamat;
 
-            $langganans = Langganan::query()
+            $langganans = Langinv::query()
                 ->where('pelanggan_id', '=', $pelanggan_id)
-                ->where('status', '=', '1')
+                ->where('invoice_id', '=', $id_invoice)
+                ->where('status_id', '=', 8)
                 ->get();
-//            $datainv[]=$langganans;
 
             $tgl_terbit = Carbon::now()->setTimezone('Asia/Jakarta');
-            $tgl_tempo = Carbon::now()->setTimezone('Asia/Jakarta')->addMonth();
+//            $tgl_tempo = Carbon::now()->setTimezone('Asia/Jakarta')->addMonth();
 
             $data_ambil = [
                 'email_cv' => 'info@gudangtechno.web.id',
                 'nama_pelanggan' => $nama_pelanggan,
                 'email_pelanggan' => $email_pelanggan,
-                'no_hp_pelanggan' => $no_hp_pelanggan,
-                'alamat_pelanggan' => $alamat_pelanggan,
+                'no_hp_pelanggan' => $username_pelanggan,
                 'id_invoice' => $id_invoice,
                 'tgl_terbit' => $tgl_terbit,
-                'tgl_tempo' => $tgl_tempo,
-                'harga_bayar' => $harga_bayar,
+//                'tgl_tempo' => $tgl_tempo,
+                'harga_bayar' => $hargatagihan,
                 'langganans' => $langganans,
             ];
 
             Mail::to($email_pelanggan)->send(new Invoice($data_ambil));
-            $statusinv = Invoices::find($id_invoice);
-            $statusinv->status = '1';
-            $statusinv->tgl_terbit = $tgl_terbit;
-            $statusinv->tgl_tempo = $tgl_tempo;
-            $statusinv->save();
+            DB::table('langganans')
+                ->where('pelanggan_id', '=', $pelanggan_id)
+                ->where('status_id', '=', 3)
+                ->update([
+                    'status_id'=>2,
+                    'tgl_aktif' => null,
+                ]);
+            DB::table('langganan_invoices')
+                ->where('pelanggan_id', '=', $pelanggan_id)
+                ->where('invoice_id', '=', $id_invoice)
+                ->where('status_id', '=', 8)
+                ->update([
+                    'status_id'=>6,
+                ]);
+            DB::table('invoices')
+                ->where('id_invoice', '=', $id_invoice)
+                ->where('bulan', '=', $bulan)
+                ->update([
+                    'status_id'=>6,
+                    'tagihan' => $hargatagihan,
+                    'bulan'=>$bulans
+                ]);
         }
         return back()->with('success', 'Invoice telah terkirim semua!');
 
     }
 
-    public function kirim_invoice($id_invoice){
-        $data = DB::table('invoices')
-            ->select('*')
-            ->where('id_invoice', $id_invoice)
-            ->get()
-            ->toArray();
-        $objectToArray = (array)$data;
-        $data1 = $objectToArray[0];
-        $data2 = (array)$data1;
-        $getpelanggan = $data2['pelanggan_id'];
-        $harga_bayar = $data2['harga_bayar'];
+    public function setujui_pembayaran($id_invoice)
+    {
+        $invoices = Invoices::query()->find($id_invoice);
+        $id_pelanggan = $invoices->pelanggan_id;
+        $user = User::query()->find($id_pelanggan);
+        $nama2 = $user->name;
 
-        $user = User::find($getpelanggan);
-        $nama_pelanggan = $user->name;
-        $email_pelanggan = $user->email;
-        $no_hp_pelanggan = $user->no_hp;
-        $alamat_pelanggan = $user->alamat;
+        $invoices->status_id = 8;
+        $invoices->tagihan = 0;
+        $invoices->save();
 
-        DB::table('langganans')
-            ->where('pelanggan_id', $getpelanggan)
-            ->where('status', '2')
-            ->update([
-                'status'=>'3',
-            ]);
+        $tgl_aktif = Carbon::now()->setTimezone('Asia/Jakarta');
 
-        $langganans = Langganan::where('pelanggan_id', $getpelanggan)
-            ->where('status', '3')
+        $datas = Langganan::query()->where('pelanggan_id', '=', $id_pelanggan)
+            ->where('status_id', '=', 2)
             ->get();
 
-        $tgl_terbit = Carbon::now()->setTimezone('Asia/Jakarta');
-        $tgl_tempo = Carbon::now()->setTimezone('Asia/Jakarta')->addSeconds(86340);
+        $nnama = [];
+        foreach($datas as $data){
+            $desa = $data->desa_id;
+            $kecamatan = $data->kecamatan_id;
+            $kabupaten = $data->kabupaten_id;
+            $provinsi = $data->provinsi_id;
+            $detail_alamat = $data->detail_alamat;
+            $alamat_pasang = $data->alamat_pasang;
+            $layanan = $data->layanan_id;
+            $bts_id = $data->bts_id;
+            $ip = $data->ip;
 
-        $data_ambil = [
-            'email_cv' => 'info@gudangtechno.web.id',
-            'nama_pelanggan' => $nama_pelanggan,
-            'email_pelanggan' => $email_pelanggan,
-            'no_hp_pelanggan' => $no_hp_pelanggan,
-            'alamat_pelanggan' => $alamat_pelanggan,
-            'id_invoice' => $id_invoice,
-            'tgl_terbit' => $tgl_terbit,
-            'tgl_tempo' => $tgl_tempo,
-            'harga_bayar' => $harga_bayar,
-            'langganans' => $langganans,
-        ];
+            $getbts = Bts::query()->find($bts_id);
+            $frekuensi = $getbts->frekuensi;
 
-        Mail::to($email_pelanggan)->send(new Invoice($data_ambil));
-        $statusinv = Invoices::find($id_invoice);
-        $statusinv->status = '1';
-        $statusinv->tgl_terbit = $tgl_terbit;
-        $statusinv->tgl_tempo = $tgl_tempo;
-        $statusinv->save();
+            $getdesa = Village::query()->find($desa);
+            $nama3 = $getdesa->name;
 
-        if (auth()->user()->user_role==1){
-            return redirect()->route('admin.invoice');
-        }elseif(auth()->user()->user_role==2){
-            return redirect()->route('teknisi.invoice');
+            $getlayanan = Layanan::query()->find($layanan);
+            $nama4 = $getlayanan->nama_layanan;
+
+            $arrnama = array($nama2,$nama3,$nama4);
+            $nama = implode("-",$arrnama);
+            $ssid = implode("_",$arrnama);
+
+            $tbts = new TurunanBts();
+            $tbts->bts_id = $bts_id;
+            $tbts->nama_turunan = $nama;
+            $tbts->ssid = $ssid;
+            $tbts->provinsi_id = $provinsi;
+            $tbts->kabupaten_id = $kabupaten;
+            $tbts->kecamatan_id = $kecamatan;
+            $tbts->desa_id = $desa;
+            $tbts->detail_alamat = $detail_alamat;
+            $tbts->alamat_pasang = $alamat_pasang;
+            $tbts->frekuensi = $frekuensi;
+            $tbts->ip = $ip;
+            $tbts->status_id = 2;
+
+            $tbts->save();
+//            $nnama[]=$nama;
         }
+
+        DB::table('langganans')
+            ->where('pelanggan_id', '=', $id_pelanggan)
+            ->where('status_id', '=', 2)
+            ->update([
+                'status_id'=>3,
+                'tgl_aktif' => $tgl_aktif,
+            ]);
+        DB::table('langganan_invoices')
+            ->where('pelanggan_id', '=', $id_pelanggan)
+            ->where('invoice_id', '=', $id_invoice)
+            ->where('status_id', '=', 7)
+            ->update([
+                'status_id'=>8,
+            ]);
+//dd($nnama);
+        return redirect()->route('admin.invoice');
+    }
+
+    public function tolak_pembayaran($id_invoice)
+    {
+        $invoices = Invoices::query()->find($id_invoice);
+        $id_pelanggan = $invoices->pelanggan_id;
+
+        $invoices->status_id = 9;
+        $invoices->tagihan = 0;
+        $invoices->harga_bayar = 0;
+        $invoices->save();
+
+        $tgl_aktif = Carbon::now()->setTimezone('Asia/Jakarta');
+
+        $datas = Langganan::query()->where('pelanggan_id', '=', $id_pelanggan)
+            ->where('status_id', '=', 2)
+            ->get();
+
+        $nnama = [];
+
+        DB::table('langganans')
+            ->where('pelanggan_id', '=', $id_pelanggan)
+            ->where('status_id', '=', 2)
+            ->update([
+                'status_id'=>4,
+                'tgl_aktif' => $tgl_aktif,
+            ]);
+        DB::table('langganan_invoices')
+            ->where('pelanggan_id', '=', $id_pelanggan)
+            ->where('invoice_id', '=', $id_invoice)
+            ->where('status_id', '=', 7)
+            ->update([
+                'status_id'=>9,
+            ]);
+//dd($nnama);
+        return redirect()->route('admin.invoice');
     }
 
     public function print_invoice($id_invoice){
@@ -226,9 +320,34 @@ class InvoiceController extends Controller
 
         $invoice = Invoices::find($id_inv);
         $invoice->bukti_bayar = $name;
+        $invoice->status_id = 7;
         $invoice->save();
+
+        DB::table('langganan_invoices')
+            ->where('invoice_id', '=', $id_inv)
+            ->where('status_id', '=', 6)
+            ->update([
+                'status_id'=>7,
+            ]);
 
         $bukti->move(public_path('bukti_bayar'), $name);
         return redirect()->back();
+    }
+
+    //get ajax
+    public function get_detail(Request $request)
+    {
+        $id_invoice = $request->id_invoice;
+
+        $langganans = Langinv::query()
+            ->where('invoice_id', '=', $id_invoice)
+            ->get();
+
+        $td = "<table class='table table-bordered table-striped mg-b-0 text-md-nowrap'>";
+        foreach ($langganans as $langganan) {
+            $td .= "<td>$langganan->invoice_id</td>";
+            $td .= "<td>$langganan->langganan_id</td>";
+        }
+        echo $td;
     }
 }
