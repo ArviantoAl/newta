@@ -97,10 +97,10 @@ class AllSeeder extends Seeder
 //        3
         $kategori = [
             [
-                'kategori_frekuensi' => '2,4g',
+                'kategori_frekuensi' => '2,4Ghz',
             ],
             [
-                'kategori_frekuensi' => '5g',
+                'kategori_frekuensi' => '5Ghz',
             ],
         ];
         DB::table('kategoris')->insert($kategori);

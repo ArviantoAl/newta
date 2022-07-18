@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\BtsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\master\LanggananController;
@@ -82,8 +83,29 @@ Route::group(['prefix'=>'admin','middleware'=>['userRole','auth']],function (){
 
 Route::group(['prefix'=>'teknisi','middleware'=>['userRole','auth']],function (){
     Route::get('dashboard', [DashboardController::class, 'index'])->name('teknisi.dashboard');
+
+    Route::get('master_bts', [BtsController::class, 'index_bts'])->name('teknisi.masterbts');
+    Route::get('getbts', [BtsController::class, 'tambah_bts'])->name('teknisi.tambahmasterbts');
+    Route::post('postbts', [BtsController::class, 'post_tambah_bts'])->name('teknisi.posttambahmasterbts');
+
+    Route::get('master_kategori', [BtsController::class, 'index_kategori'])->name('teknisi.masterkategori');
+    Route::get('getkategori', [BtsController::class, 'get_tambah_kategori'])->name('teknisi.tambahmasterkategori');
+    Route::post('postkategori', [BtsController::class, 'post_tambah_kategori'])->name('teknisi.posttambahmasterkategori');
+    Route::get('{id_jenis}/editkategori', [DashboardController::class, 'edit_kategori'])->name('teknisi.editkategori');
+    Route::put('posteditkategori/{id_jenis}', [DashboardController::class, 'post_edit_kategori'])->name('admin.posteditkategori');
+
+    Route::get('master_frekuensi', [BtsController::class, 'index_frekuensi'])->name('teknisi.masterfrekuensi');
+
+    Route::get('perangkat', [dashboardController::class, 'index'])->name('teknisi.perangkat');
+    Route::get('getperangkat', [dashboardController::class, 'index'])->name('teknisi.tambahperangkat');
+    Route::post('postperangkat', [dashboardController::class, 'index'])->name('teknisi.posttambahperangkat');
+
+    Route::get('pelanggan', [BtsController::class, 'index_pelanggan'])->name('teknisi.pelanggan');
+    Route::get('getpelanggan', [BtsController::class, 'get_tambah_pelanggan'])->name('teknisi.tambahpelanggan');
+    Route::post('postpelanggan', [BtsController::class, 'post_tambah_pelanggan'])->name('teknisi.posttambahpelanggan');
+    
+//    kelola langganan
     Route::get('data_layanan', [LayananController::class, 'index_layanan'])->name('teknisi.layanan');
-    // kelola langganan
     Route::get('data_langganan', [LanggananController::class, 'semua_langganan'])->name('teknisi.langganan');
     Route::get('langganan_baru', [LanggananController::class, 'langganan_baru'])->name('teknisi.langgananbaru');
     Route::get('langganan_setuju', [LanggananController::class, 'langganan_setuju'])->name('teknisi.langganansetuju');
@@ -91,6 +113,7 @@ Route::group(['prefix'=>'teknisi','middleware'=>['userRole','auth']],function ()
     Route::get('langganan_batal', [LanggananController::class, 'langganan_batal'])->name('teknisi.langgananbatal');
     Route::get('langganan_aktif', [LanggananController::class, 'langganan_aktif'])->name('teknisi.langgananaktif');
     Route::get('langganan_kadaluarsa', [LanggananController::class, 'langganan_kadaluarsa'])->name('teknisi.langganankadaluarsa');
+
 //    kelola invoice
     Route::get('data_invoice', [InvoiceController::class, 'data_invoice'])->name('teknisi.invoice');
     Route::get('invoice_belum_kirim', [InvoiceController::class, 'invoice_belumkirim'])->name('teknisi.inv_belumkirim');
@@ -113,3 +136,8 @@ Route::group(['prefix'=>'pelanggan','middleware'=>['userRole','auth', 'verified'
     Route::post('bukti/{id_inv}', [InvoiceController::class, 'bukti'])->name('pelanggan.bukti');
     Route::get('print/{id_invoice}', [InvoiceController::class, 'print_invoice'])->name('pelanggan.printinv');
 });
+
+// Route::group(['prefix'=>'tkenisi','middleware'=>['userRole','auth']],function (){
+//     Route::get('dashboard', [DashboardController::class, 'index'])->name('teknisi.dashboard');
+//     //masterdata
+// });

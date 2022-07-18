@@ -26,6 +26,10 @@ return new class extends Migration
             $table->foreign('kecamatan_id')->references('id')->on('districts');
             $table->char('desa_id');
             $table->foreign('desa_id')->references('id')->on('villages');
+            // $table->foreignId('provinsi_id')->constrained('provinces')->onUpdate('cascade')->onDelete('cascade');
+            // $table->foreignId('kabupaten_id')->constrained('regencies')->onUpdate('cascade')->onDelete('cascade');
+            // $table->foreignId('kecamatan_id')->constrained('districts')->onUpdate('cascade')->onDelete('cascade');
+            // $table->foreignId('desa_id')->constrained('villages')->onUpdate('cascade')->onDelete('cascade');
             $table->longText('detail_alamat');
             $table->longText('alamat_pasang')->nullable(); //untuk di implode jadi satu
             $table->string('frekuensi');

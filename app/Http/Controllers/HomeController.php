@@ -26,7 +26,7 @@ class HomeController extends Controller
         if (auth()->user()->user_role==1){
             return view('dashboard.admin.index');
         }elseif(auth()->user()->user_role==2){
-            return view('teknisi.dashboard');
+            return view('dashboard.teknisi.index');
         }elseif(auth()->user()->user_role==3){
             return view('dashboard.pelanggan.index');
         }
